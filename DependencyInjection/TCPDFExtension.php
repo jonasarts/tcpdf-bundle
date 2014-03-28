@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace ja\TCPDFBundle\DependencyInjection;
+namespace jonasarts\Bundle\TCPDFBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;

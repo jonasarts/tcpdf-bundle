@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace ja\TCPDFBundle;
+namespace jonasarts\Bundle\TCPDFBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
