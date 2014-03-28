@@ -51,7 +51,7 @@ EOD;
     $pdf->Write(0, $txt, '', 0, '', true, 0, false, false, 0);
 
     $pdf->Output('example_001.pdf', 'I');
-``
+```
 
 Read the documentation for the TCPDF class on the [TCPDF Website](http://www.tcpdf.org)!
 

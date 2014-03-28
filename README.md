@@ -17,5 +17,5 @@ This bundle is under the MIT license. See the complete license in the bundle:
 
     LICENSE
 
-The TCPDF php class is under the GNU Lesser General Public License version 3. [TCPDF Website](http://www.tcpdf.org)
+The TCPDF php class is under the GNU Lesser General Public License version 3. [TCPDF Website](http://www.tcpdf.org)  
 Read their included [license](https://github.com/jonasarts/tcpdf-bundle/blob/master/lib/LICENSE.TXT).
