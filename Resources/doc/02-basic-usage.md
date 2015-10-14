@@ -13,7 +13,7 @@ In the php code examples, ``$this`` referes to a controller.
 
 ```php
     // get the service
-    $tbs = $this->container->get('tcpdf');
+    $pdf = $this->container->get('tcpdf');
 
     // set document information
     $pdf->SetCreator(PDF_CREATOR);
