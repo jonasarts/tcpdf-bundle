@@ -3,5 +3,5 @@ parameters:
 
 services:
     tcpdf:
-        class: %jonasarts.tcpdf.class%
+        class: "%jonasarts.tcpdf.class%"
         arguments: []

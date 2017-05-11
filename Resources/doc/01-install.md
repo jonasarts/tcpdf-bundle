@@ -3,39 +3,33 @@ Setting up the bundle
 
 ## Install the bundle
 
-First add the bundle to your composer.json file: 
-
-```json
-{
-    // ...
-    "require": {
-        // ...
-        "jonasarts/tcpdf-bundle": "1.0.*"
-    },
-    "minimum-stability": "stable",
-    // ...
-}
-```
-
-Then run composer.phar:
+Execute this console command in your project:
 
 ``` bash
-$ php composer.phar install
+$ composer require jonasarts/tcpdf-bundle
 ```
 
 ## Enable the bundle
 
-Enable the bundle in the kernel:
+Register the bundle in the kernel:
 
 ```php
 // app/AppKernel.php
 
-public function registerBundles()
+// ...
+class AppKernel extends Kernel
 {
-    $bundles = array(
-        // ...
-        new jonasarts\Bundle\TCPDFBundle\TCPDFBundle(),
-    );
+    // ...
+
+    public function registerBundles()
+    {
+        $bundles = array(
+            // ...
+            new jonasarts\Bundle\TCPDFBundle\TCPDFBundle(),
+        );
+
+    // ...
+    }
 }
 ```
 
