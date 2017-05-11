@@ -1,6 +1,11 @@
 CHANGE LOG
 ==========
 
+V 1.1.0
+-------
+
+- Release for Symfony 3.x
+
 V 1.0.2
 -------
 
