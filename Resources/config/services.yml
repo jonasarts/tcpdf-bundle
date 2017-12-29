@@ -1,7 +1,10 @@
 parameters:
-    jonasarts.tcpdf.class: jonasarts\Bundle\TCPDFBundle\Services\TCPDF
+    jonasarts.tcpdf.class: jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF
 
 services:
     tcpdf:
         class: "%jonasarts.tcpdf.class%"
         arguments: []
+        public: true
+
+    jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF: ~

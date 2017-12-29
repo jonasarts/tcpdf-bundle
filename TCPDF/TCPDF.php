@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace jonasarts\Bundle\TCPDFBundle\Services;
+namespace jonasarts\Bundle\TCPDFBundle\TCPDF;
 
 require_once __DIR__ . '/../lib/tcpdf/tcpdf.php';
 
