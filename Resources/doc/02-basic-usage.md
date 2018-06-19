@@ -9,6 +9,23 @@ Retrieve the service like any other symfony service:
     $tcpdf = $this->get('tcpdf');
 ```
 
+This still works for Symfony 4.x, as the 'tcpdf' service is still marked public.
+For dependency injection use `jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF` class.
+
+```php
+    /**
+     * This is a regular Controller action.
+     * 
+     * @Route("/pdf")
+     */
+    public function pdfAction(Request $request, \jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF $pdf)
+    {
+        // use $pdf like example below
+
+        $pdf->SetCreator(PDF_CREATOR);
+        
+```
+
 In the php code examples, ``$this`` referes to a controller.
 
 ```php
@@ -50,7 +67,7 @@ EOD;
     // print a block of text using Write()
     $pdf->Write(0, $txt, '', 0, '', true, 0, false, false, 0);
 
-    $pdf->Output('example_001.pdf', 'I');
+    $pdf->Output('example_002.pdf', 'I');
 ```
 
 Read the documentation for the TCPDF class on the [TCPDF Website](http://www.tcpdf.org)!

@@ -11,7 +11,7 @@ $ composer require jonasarts/tcpdf-bundle
 
 ## Enable the bundle
 
-Register the bundle in the kernel:
+Symfony 2.x - Register the bundle in the kernel:
 
 ```php
 // app/AppKernel.php
@@ -31,6 +31,19 @@ class AppKernel extends Kernel
     // ...
     }
 }
+```
+
+Symfony 4.x - Register the bundle in the bundle file:
+
+```php
+// config/bundles.php
+
+return [
+    [...]
+    jonasarts\Bundle\TCPDFBundle\TCPDFBundle::class => ['all' => true],
+    [...]
+];
+
 ```
 
 ## That's it
