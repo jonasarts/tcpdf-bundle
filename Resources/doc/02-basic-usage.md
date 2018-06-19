@@ -24,6 +24,8 @@ For dependency injection use `jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF` class.
 
         $pdf->SetCreator(PDF_CREATOR);
         
+        [...]
+    }
 ```
 
 In the php code examples, ``$this`` referes to a controller.
