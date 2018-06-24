@@ -11,7 +11,7 @@
 
 namespace jonasarts\Bundle\TCPDFBundle\TCPDF;
 
-require_once __DIR__ . '/../lib/tcpdf/tcpdf.php';
+//require_once __DIR__ . '/../lib/technickcom/tcpdf/tcpdf.php';
 
 /**
  * TCPDF Service
