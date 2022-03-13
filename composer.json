@@ -26,6 +26,5 @@
         "psr-4": {
             "jonasarts\\TCPDFBundle\\Tests\\": "tests/"
         }
-    },
-    "target-dir": "jonasarts/TCPDFBundle"
+    }
 }
