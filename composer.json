@@ -19,12 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "jonasarts\\TCPDFBundle\\": "src/"
+            "jonasarts\\Bundle\\TCPDFBundle\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "jonasarts\\TCPDFBundle\\Tests\\": "tests/"
+            "jonasarts\\Bundle\\TCPDFBundle\\Tests\\": "tests/"
         }
     }
 }
