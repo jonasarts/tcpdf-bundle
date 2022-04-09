@@ -1,6 +1,11 @@
 CHANGE LOG
 ==========
 
+V 6.0.4
+-------
+
+- Renamed files from .yml to .yaml
+
 V 6.0.0
 -------
 
