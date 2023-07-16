@@ -8,7 +8,7 @@ This bundle provides a simplified access to the TCPDF php class for the symfony 
 Installation
 ------------
 
-All the installation instructions are located in the [documentation](https://github.com/jonasarts/tcpdf-bundle/blob/master/Resources/doc/index.md).
+All the installation instructions are located in the [documentation](https://github.com/jonasarts/tcpdf-bundle/blob/master/docs/index.md).
 
 License
 -------

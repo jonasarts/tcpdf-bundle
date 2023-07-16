@@ -1,6 +1,12 @@
 CHANGE LOG
 ==========
 
+V 6.3.0
+-------
+
+- Requires PHP 8.1
+- Updated for Symfony 6.3 Branch
+
 V 6.0.4
 -------
 

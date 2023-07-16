@@ -5,13 +5,12 @@ The service is just a wrapper to the TCPDF class. You can call on it any method 
 
 In the php code examples, ``$this`` referes to a controller.
 
-Retrieve the service like any other public symfony service:
+Retrieve the service like any other public symfony service via DI:
 
 ```php
-    $tcpdf = $this->get('tcpdf');
+   // TCPDF $tcpdf
 ```
 
-Using public services is deprecated. Better use dependency injection!
 For dependency injection use `jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF` class.
 
 ```php
