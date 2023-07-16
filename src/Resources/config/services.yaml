@@ -1,0 +1,2 @@
+services:
+    jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF: ~

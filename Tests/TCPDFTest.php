@@ -25,4 +25,18 @@ class TCPDFTest extends WebTestCase
         $this->assertInstanceOf(\jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF::class, $pdf);
         $this->assertInstanceOf(\TCPDF::class, $pdf);
     }
+
+    public function testCreateA4()
+    {
+        $pdf = new \jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF();
+
+        $a4 = $pdf->createA4();
+
+        $a4->addPage();
+
+        $scale = $a4->getScaleFactor();
+
+        $this->assertEquals(round(210 * $scale), round($a4->getPageWidth(1)));
+        $this->assertEquals(round(297 * $scale), round($a4->getPageHeight(1)));
+    }
 }

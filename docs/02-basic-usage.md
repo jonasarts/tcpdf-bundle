@@ -3,19 +3,20 @@ Using the bundle
 
 The service is just a wrapper to the TCPDF class. You can call on it any method provided by the TCPDF class.
 
-Retrieve the service like any other symfony service:
+In the php code examples, ``$this`` referes to a controller.
+
+Retrieve the service like any other public symfony service via DI:
 
 ```php
-    $tcpdf = $this->get('tcpdf');
+   // TCPDF $tcpdf
 ```
 
-This still works for Symfony 4.x, as the 'tcpdf' service is still marked public.
 For dependency injection use `jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF` class.
 
 ```php
     /**
      * This is a regular Controller action.
-     * 
+     *
      * @Route("/pdf")
      */
     public function pdfAction(Request $request, \jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF $pdf)
@@ -23,7 +24,7 @@ For dependency injection use `jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF` class.
         // use $pdf like example below
 
         $pdf->SetCreator(PDF_CREATOR);
-        
+
         [...]
     }
 ```

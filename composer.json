@@ -12,11 +12,19 @@
             "homepage": "http://www.jonasarts.com"
         }
     ],
+    "minimum-stability": "stable",
     "require": {
-        "php": ">=7.1",
-        "tecnickcom/tcpdf": "^6.3"
+        "php": ">=8.1",
+        "tecnickcom/tcpdf": "^6.6"
     },
     "autoload": {
-        "psr-4": { "jonasarts\\Bundle\\TCPDFBundle\\": "" }
+        "psr-4": {
+            "jonasarts\\Bundle\\TCPDFBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "jonasarts\\Bundle\\TCPDFBundle\\Tests\\": "tests/"
+        }
     }
 }

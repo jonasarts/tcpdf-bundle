@@ -1,7 +1,0 @@
-services:
-    tcpdf:
-        class: jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF
-        arguments: []
-        public: true
-
-    jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF: ~
