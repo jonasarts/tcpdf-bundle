@@ -29,11 +29,10 @@ For dependency injection use `jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF` class.
     }
 ```
 
-In the php code examples, ``$this`` referes to a controller.
+A basic example:
 
 ```php
-    // get the service
-    $pdf = $this->container->get('tcpdf');
+    // TCPDF $pdf;
 
     // set document information
     $pdf->SetCreator(PDF_CREATOR);
