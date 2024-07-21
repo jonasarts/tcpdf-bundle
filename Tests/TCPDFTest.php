@@ -26,6 +26,14 @@ class TCPDFTest extends WebTestCase
         $this->assertInstanceOf(\TCPDF::class, $pdf);
     }
 
+    public function testCall()
+    {
+        $pdf = new \jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF();
+
+        $num = $pdf->getNumPages();
+
+        $this->assertTrue($num == 0);
+    }
     public function testCreateA4()
     {
         $pdf = new \jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF();

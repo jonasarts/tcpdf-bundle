@@ -1,11 +1,19 @@
 CHANGE LOG
 ==========
 
+V 6.4.0
+-------
+
+- Updated to TCPDF 6.7.*
+- Updated for Symfony 6.4 branch
+- Prepared for future Symfony 7
+- Adde some minor test
+
 V 6.3.0
 -------
 
 - Requires PHP 8.1
-- Updated for Symfony 6.3 Branch
+- Updated for Symfony 6.3 branch
 
 V 6.0.4
 -------
