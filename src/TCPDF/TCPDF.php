@@ -35,6 +35,8 @@ class TCPDF extends \TCPDF
         parent::__construct($orientation, $unit, $format, true, 'UTF-8', false);
     }
 
+    #region header & footer
+
     // Page header
     public function Header()
     {
@@ -60,6 +62,24 @@ class TCPDF extends \TCPDF
     {
         $this->footer_closure = $closure;
     }
+
+    #endregion
+
+    /* helpers */
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function getTextColor(): array
+    {
+        $r = new \ReflectionObject($this);
+        $p = $r->getProperty('fgcolor');
+        $p->setAccessible(true);
+
+        return $p->getValue($this);
+    }
+
+    /* create 'paper' methods */
 
     public static function createA3($orientation='P'): self
     {
