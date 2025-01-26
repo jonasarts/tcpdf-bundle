@@ -1,6 +1,12 @@
 CHANGE LOG
 ==========
 
+V 7.0.0
+-------
+
+- Requires PHP 8.2
+- Updated for Symfony 7 branch
+
 V 6.4.0
 -------
 
