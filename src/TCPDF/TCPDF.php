@@ -100,4 +100,123 @@ class TCPDF extends \TCPDF
     {
         return new self($orientation, 'mm', 'A6');
     }
+
+    /* access to page helper methods */
+
+    public function addAddressBoxC5(string $address, array $pp = null, bool $debug = false): void
+    {
+        PDFHelper::addAddressBoxC5($this, $address, $pp, $debug);
+    }
+
+    public function addAddressBoxC5Right(string $address, array $pp = null, bool $debug = false): void
+    {
+        PDFHelper::addAddressBoxC5Right($this, $address, $pp, $debug);
+    }
+
+    public function addAddressBoxC65(string $address, array $pp = null, bool $debug = false): void
+    {
+        PDFHelper::addAddressBoxC65($this, $address, $pp, $debug);
+    }
+
+    public function addQrCodeEsrFooter(
+        string $mode,
+        string $recipientName,
+        ?string $recipientAddress1,
+        ?string $recipientAddress2,
+        ?string $recipientStreet,
+        ?string $recipientBuildingNumber,
+        ?string $recipientPostalCode,
+        ?string $recipientCity,
+        string $recipientCountryCode,
+        string $senderName,
+        ?string $senderAddress,
+        ?string $senderStreet,
+        ?string $senderBuildingNumber,
+        ?string $senderPostalCode,
+        ?string $senderCity,
+        string $senderCountryCode,
+        string $qr_iban,
+        string $iban,
+        ?int $amount,
+        ?string $reference,
+        ?string $subject
+    ): void
+    {
+        PDFHelper::addQrCodeEsr(
+            $this,
+            $mode,
+            $recipientName,
+            $recipientAddress1,
+            $recipientAddress2,
+            $recipientStreet,
+            $recipientBuildingNumber,
+            $recipientPostalCode,
+            $recipientCity,
+            $recipientCountryCode,
+            $senderName,
+            $senderAddress,
+            $senderStreet,
+            $senderBuildingNumber,
+            $senderPostalCode,
+            $senderCity,
+            $senderCountryCode,
+            $qr_iban,
+            $iban,
+            $amount,
+            $reference,
+            $subject
+        );
+    }
+
+    public function addQrCodeEsrPage(
+        string $mode,
+        string $recipientName,
+        ?string $recipientAddress1,
+        ?string $recipientAddress2,
+        ?string $recipientStreet,
+        ?string $recipientBuildingNumber,
+        ?string $recipientPostalCode,
+        ?string $recipientCity,
+        string $recipientCountryCode,
+        string $senderName,
+        ?string $senderAddress,
+        ?string $senderStreet,
+        ?string $senderBuildingNumber,
+        ?string $senderPostalCode,
+        ?string $senderCity,
+        string $senderCountryCode,
+        string $qr_iban,
+        string $iban,
+        ?int $amount,
+        ?string $reference,
+        ?string $subject
+    ): void
+    {
+        $this->AddPage();
+        $this->SetAutoPageBreak(0);
+
+        $this->addQrCodeEsrFooter(
+            $mode,
+            $recipientName,
+            $recipientAddress1,
+            $recipientAddress2,
+            $recipientStreet,
+            $recipientBuildingNumber,
+            $recipientPostalCode,
+            $recipientCity,
+            $recipientCountryCode,
+            $senderName,
+            $senderAddress,
+            $senderStreet,
+            $senderBuildingNumber,
+            $senderPostalCode,
+            $senderCity,
+            $senderCountryCode,
+            $qr_iban,
+            $iban,
+            $amount,
+            $reference,
+            $subject
+        );
+    }
 }
