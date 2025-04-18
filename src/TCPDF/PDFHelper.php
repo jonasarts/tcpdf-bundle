@@ -310,7 +310,9 @@ abstract class PDFHelper
         string $iban,
         ?int $amount,
         ?string $reference,
-        ?string $subject
+        ?string $subject,
+        ?string $asset_schere = null,
+        ?string $asset_kreuz = null
     ): void
     {
         // validate mode (S / K)
@@ -333,8 +335,9 @@ abstract class PDFHelper
         //
 
         $debug = false;
-        $asset_image_schere = __DIR__ . '/../../../assets/images/schere/schere.png';
-        $asset_image_kreuz = __DIR__ . '/../../../assets/images/ch-kreuz_7mm/CH-Kreuz_7mm.png';
+        // vendor/jonasarts/tcpdf-bundle/src/TCPDF/PDFHelper.php
+        $asset_image_schere = $asset_schere ?? __DIR__ . '/../../../../../assets/images/schere/schere.png';
+        $asset_image_kreuz = $asset_kreuz ?? __DIR__ . '/../../../../../assets/images/ch-kreuz_7mm/CH-Kreuz_7mm.png';
 
         $font_size = 9; // base font size / receipt is -1 of base size / payment is = base size
 
@@ -367,6 +370,7 @@ abstract class PDFHelper
 
         // subject
         $subject = trim($subject);
+        $subject = mb_strimwidth($subject ?? "", 0, 140 - 3, "...", 'UTF-8');
 
         // format K
         $recipientName = mb_strimwidth($recipientName, 0, 70 - 3, "...", 'UTF-8');
@@ -374,7 +378,7 @@ abstract class PDFHelper
         $recipientAddress2 = mb_strimwidth($recipientAddress2 ?? "", 0, 70-3, "...", 'UTF-8');
         //$recipientCountryCode = $recipientCountryCode;
 
-        // +format S
+        // format S
         $recipientStreetOnly = mb_strimwidth($recipientStreet ?? "", 0, 70 - 3, "...", 'UTF-8');
         $recipientBuildingNumber = mb_strimwidth($recipientBuildingNumber ?? "", 0, 16 - 3, "...", 'UTF-8');
         $recipientPostalCode = mb_strimwidth($recipientPostalCode ?? "", 0, 16 - 3, "...", 'UTF-8');
@@ -386,13 +390,11 @@ abstract class PDFHelper
         $senderAddress2 = mb_strimwidth($senderAddress2 ?? "", 0, 70-3, "...", 'UTF-8');
         //$senderCountryCode = $senderCountryCode;
 
-        // +format S
+        // format S
         $senderStreetOnly = mb_strimwidth($senderStreet ?? "", 0, 70 - 3, "...", 'UTF-8');
         $senderBuildingNumber = mb_strimwidth($senderBuildingNumber ?? "", 0, 16 - 3, "...", 'UTF-8');
         $senderPostalCode = mb_strimwidth($senderPostalCode ?? "", 0, 16 - 3, "...", 'UTF-8');
         $senderCity = mb_strimwidth($senderCity ?? "", 0, 35 - 3, "...", 'UTF-8');
-
-        $subject = mb_strimwidth($subject ?? "", 0, 140 - 3, "...", 'UTF-8');
 
         //* standard K
         if (EsrMode::MODE_K->value === $mode->value) {
@@ -514,17 +516,7 @@ abstract class PDFHelper
         //$payment_text_data .= "</div>";
         //*/
 
-        // prepare page
-
-        // page break ?
-        $MIN_HEIGHT_FOR_ESR_FOOTER = 110;
-        $remainingHeightOnPage = $pdf->getPageHeight() - $pdf->GetY();
-
-        if ($remainingHeightOnPage < $MIN_HEIGHT_FOR_ESR_FOOTER) {
-            $pdf->AddPage();
-        }
-
-        // debug only:
+        // for debug only:
         //$recipt_text_data = "Angaben\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ";
         //$payment_text_data = $recipt_text_data;
 

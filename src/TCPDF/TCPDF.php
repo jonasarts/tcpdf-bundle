@@ -150,9 +150,22 @@ class TCPDF extends \TCPDF
         string $iban,
         ?int $amount,
         ?string $reference,
-        ?string $subject
+        ?string $subject,
+        ?string $asset_schere = null,
+        ?string $asset_kreuz = null,
+        bool $use_optional_page_break = false
     ): void
     {
+        if ($use_optional_page_break) {
+            // page break ?
+            $MIN_HEIGHT_FOR_ESR_FOOTER = 110;
+            $remainingHeightOnPage = $this->getPageHeight() - $this->GetY();
+
+            if ($remainingHeightOnPage < $MIN_HEIGHT_FOR_ESR_FOOTER) {
+                $this->AddPage();
+            }
+        }
+
         PDFHelper::addQrCodeEsr(
             $this,
             $mode,
@@ -176,7 +189,9 @@ class TCPDF extends \TCPDF
             $iban,
             $amount,
             $reference,
-            $subject
+            $subject,
+            $asset_schere,
+            $asset_kreuz
         );
     }
 
@@ -202,7 +217,9 @@ class TCPDF extends \TCPDF
         string $iban,
         ?int $amount,
         ?string $reference,
-        ?string $subject
+        ?string $subject,
+        ?string $asset_schere = null,
+        ?string $asset_kreuz = null
     ): void
     {
         $this->AddPage();
@@ -230,7 +247,9 @@ class TCPDF extends \TCPDF
             $iban,
             $amount,
             $reference,
-            $subject
+            $subject,
+            $asset_schere,
+            $asset_kreuz
         );
     }
 }
