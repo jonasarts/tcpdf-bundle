@@ -164,7 +164,7 @@ class TCPDF extends \TCPDF
         ?string $subject,
         ?string $asset_schere = null,
         ?string $asset_kreuz = null,
-        bool $use_optional_page_break = false
+        bool $use_optional_page_break = true
     ): void
     {
         if ($use_optional_page_break) {
