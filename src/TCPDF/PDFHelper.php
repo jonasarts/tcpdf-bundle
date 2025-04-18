@@ -299,7 +299,8 @@ abstract class PDFHelper
         ?string $recipientCity,
         string $recipientCountryCode,
         string $senderName,
-        ?string $senderAddress,
+        ?string $senderAddress1,
+        ?string $senderAddress2,
         ?string $senderStreet,
         ?string $senderBuildingNumber,
         ?string $senderPostalCode,
@@ -381,7 +382,8 @@ abstract class PDFHelper
 
         // format K
         $senderName = mb_strimwidth($senderName, 0, 70 - 3, "...", 'UTF-8');
-        $senderAddress = mb_strimwidth($senderAddress ?? "", 0, 70-3, "...", 'UTF-8');
+        $senderAddress1 = mb_strimwidth($senderAddress1 ?? "", 0, 70-3, "...", 'UTF-8');
+        $senderAddress2 = mb_strimwidth($senderAddress2 ?? "", 0, 70-3, "...", 'UTF-8');
         //$senderCountryCode = $senderCountryCode;
 
         // +format S
@@ -402,7 +404,8 @@ abstract class PDFHelper
                 $recipientCountryCode,
                 $amount,
                 $senderName,
-                $senderAddress,
+                $senderAddress1,
+                $senderAddress2,
                 $senderCountryCode,
                 $reference,
                 $subject
@@ -457,7 +460,8 @@ abstract class PDFHelper
                 $recipt_text_data .= "<br>\n" . $senderStreetOnly . " " . $senderBuildingNumber;
                 $recipt_text_data .= "<br>\n" . $senderPostalCode . " " . $senderCity;
             } elseif ('K' === $mode) {
-                $recipt_text_data .= "<br>\n" . $senderAddress;
+                $recipt_text_data .= "<br>\n" . $senderAddress1;
+                $recipt_text_data .= "<br>\n" . $senderAddress2;
             }
             // $sender['country']
             $recipt_text_data .= "</p>";
@@ -493,7 +497,8 @@ abstract class PDFHelper
                 $payment_text_data .= "<br>\n" . $senderStreetOnly . " " . $senderBuildingNumber;
                 $payment_text_data .= "<br>\n" . $senderPostalCode . " " . $senderCity;
             } elseif ('K' === $mode) {
-                $payment_text_data .= "<br>\n" . $senderAddress;
+                $payment_text_data .= "<br>\n" . $senderAddress1;
+                $payment_text_data .= "<br>\n" . $senderAddress2;
             }
             // $sender['country']
             $payment_text_data .= "</p>";
@@ -755,7 +760,8 @@ abstract class PDFHelper
         string $recipientCountryCode,
         ?int $amount,
         string $senderName,
-        string $senderAddress,
+        string $senderAddress1,
+        string $senderAddress2,
         string $senderCountryCode,
         ?string $reference,
         ?string $subject
@@ -797,7 +803,8 @@ $str_amount
 CHF
 K
 {$senderName}
-{$senderAddress}
+{$senderAddress1}
+{$senderAddress2}
 
 
 {$senderCountryCode}
