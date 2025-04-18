@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace jonasarts\Bundle\TCPDFBundle\TCPDF;
 
+use jonasarts\Bundle\TCPDFBundle\TCPDF\Enum\EsrMode;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Types\Align;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Types\Rect;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Types\VAlign;
@@ -21,8 +22,8 @@ use jonasarts\Bundle\TCPDFBundle\TCPDF\Utils\BankingUtils;
 abstract class PDFHelper
 {
     final public const FONT_LIGHT = 'helvetica';
-    final public const FONT_MEDIUM = 'helvetica';
     final public const FONT_REGULAR = 'helvetica';
+    final public const FONT_MEDIUM = 'helvetica';
     final public const FONT_BOLD = 'helveticaB';
 
     public static function addDebugGrid(TCPDF &$pdf): void
@@ -46,12 +47,13 @@ abstract class PDFHelper
         }
     }
 
-    public static function addFonts(TCPDF $pdf): void
+    public static function addDefaultFonts(TCPDF $pdf): void
     {
         //AddFont( $family, $style = '', $fontfile = '', $subset = 'default' )
 
         $pdf->AddFont(static::FONT_LIGHT, $style = '');
-        $pdf->AddFont(static::FONT_MEDIUM, $style = '');
+        $pdf->AddFont(static::FONT_REGULAR, $style = '');
+        //$pdf->AddFont(static::FONT_MEDIUM, $style = '');
         $pdf->AddFont(static::FONT_BOLD, $style = 'B');
 
     }
@@ -287,7 +289,7 @@ abstract class PDFHelper
 
     public static function addQrCodeEsr(
         TCPDF $pdf,
-        string $mode,
+        EsrMode|string $mode,
         string $recipientName,
         ?string $recipientAddress1,
         ?string $recipientAddress2,
@@ -311,8 +313,12 @@ abstract class PDFHelper
     ): void
     {
         // validate mode (S / K)
-        if (!in_array($mode, ['S', 'K'])) {
-            throw new \RuntimeException();
+        if (is_string($mode)) {
+            if (!in_array($mode, ['S', 'K'])) {
+                throw new \RuntimeException();
+            }
+
+            $mode = EsrMode::tryFrom($mode);
         }
 
         // validate data
@@ -387,7 +393,7 @@ abstract class PDFHelper
         $subject = mb_strimwidth($subject, 0, 140 - 3, "...", 'UTF-8');
 
         //* standard K
-        if ('K' === $mode) {
+        if (EsrMode::MODE_K->value === $mode->value) {
             $qr_data = static::getQrDataK(
                 $iban_,
                 $recipientName,
@@ -405,7 +411,7 @@ abstract class PDFHelper
         //*/
 
         //* standard S
-        if ('S' === $mode) {
+        if (EsrMode::MODE_S->value === $mode->value) {
             $qr_data = static::getQrDataS(
                 $iban_,
                 $recipientName,

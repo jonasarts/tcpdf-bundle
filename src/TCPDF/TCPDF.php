@@ -101,7 +101,12 @@ class TCPDF extends \TCPDF
         return new self($orientation, 'mm', 'A6');
     }
 
-    /* access to page helper methods */
+    /* access to pdf-helper methods */
+
+    public function addDefaultFonts(): void
+    {
+        PDFHelper::addDefaultFonts($this);
+    }
 
     public function addAddressBoxC5(string $address, array $pp = null, bool $debug = false): void
     {
@@ -111,6 +116,11 @@ class TCPDF extends \TCPDF
     public function addAddressBoxC5Right(string $address, array $pp = null, bool $debug = false): void
     {
         PDFHelper::addAddressBoxC5Right($this, $address, $pp, $debug);
+    }
+
+    public function addAddressBoxC5Right4Pingen(string $address, array $pp = null): void
+    {
+        PDFHelper::addAddressBoxC5Right4Pingen($this, $address, $pp);
     }
 
     public function addAddressBoxC65(string $address, array $pp = null, bool $debug = false): void
