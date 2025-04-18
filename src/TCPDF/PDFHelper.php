@@ -442,11 +442,13 @@ abstract class PDFHelper
         $recipt_text_data .= "<p>" . $iban_formatted;
         $recipt_text_data .= "<br>\n" . $recipientName;
         if (EsrMode::MODE_S->value === $mode->value) {
-            $recipt_text_data .= "<br>\n" . $recipientStreetOnly . " " . $recipientBuildingNumber;
-            $recipt_text_data .= "<br>\n" . $recipientPostalCode . " " . $recipientCity;
+            $recipt_text_data .= "<br>\n" . trim($recipientStreetOnly . " " . $recipientBuildingNumber);
+            $recipt_text_data .= "<br>\n" . trim($recipientPostalCode . " " . $recipientCity);
         } elseif (EsrMode::MODE_K->value === $mode->value) {
-            $recipt_text_data .= "<br>\n" . $recipientAddress1;
-            $recipt_text_data .= "<br>\n" . $recipientAddress2;
+            if (!empty($recipientAddress1))
+                $recipt_text_data .= "<br>\n" . $recipientAddress1;
+            if (!empty($recipientAddress2))
+                $recipt_text_data .= "<br>\n" . $recipientAddress2;
         }
         $recipt_text_data .= "</p>";
         if (!empty($reference)) {
@@ -457,11 +459,13 @@ abstract class PDFHelper
         if (!empty($senderName)) {
             $recipt_text_data .= "<p>" . $senderName;
             if (EsrMode::MODE_S->value === $mode->value) {
-                $recipt_text_data .= "<br>\n" . $senderStreetOnly . " " . $senderBuildingNumber;
-                $recipt_text_data .= "<br>\n" . $senderPostalCode . " " . $senderCity;
+                $recipt_text_data .= "<br>\n" . trim($senderStreetOnly . " " . $senderBuildingNumber);
+                $recipt_text_data .= "<br>\n" . trim($senderPostalCode . " " . $senderCity);
             } elseif (EsrMode::MODE_K->value === $mode->value) {
-                $recipt_text_data .= "<br>\n" . $senderAddress1;
-                $recipt_text_data .= "<br>\n" . $senderAddress2;
+                if (!empty($senderAddress1))
+                    $recipt_text_data .= "<br>\n" . $senderAddress1;
+                if (!empty($senderAddress2))
+                    $recipt_text_data .= "<br>\n" . $senderAddress2;
             }
             // $sender['country']
             $recipt_text_data .= "</p>";
@@ -475,11 +479,13 @@ abstract class PDFHelper
         $payment_text_data .= "<p>" . $iban_formatted;
         $payment_text_data .= "<br>\n" . $recipientName;
         if (EsrMode::MODE_S->value === $mode->value) {
-            $payment_text_data .= "<br>\n" . $recipientStreetOnly . " " . $recipientBuildingNumber;
-            $payment_text_data .= "<br>\n" . $recipientPostalCode . " " . $recipientCity;
+            $payment_text_data .= "<br>\n" . trim($recipientStreetOnly . " " . $recipientBuildingNumber);
+            $payment_text_data .= "<br>\n" . trim($recipientPostalCode . " " . $recipientCity);
         } elseif (EsrMode::MODE_K->value === $mode->value) {
-            $payment_text_data .= "<br>\n" . $recipientAddress1;
-            $payment_text_data .= "<br>\n" . $recipientAddress2;
+            if (!empty($recipientAddress1))
+                $payment_text_data .= "<br>\n" . $recipientAddress1;
+            if (!empty($recipientAddress2))
+                $payment_text_data .= "<br>\n" . $recipientAddress2;
         }
         $payment_text_data .= "</p>";
         if (!empty($reference)) {
@@ -494,11 +500,13 @@ abstract class PDFHelper
         if (!empty($senderName)) {
             $payment_text_data .= "<p>" . $senderName;
             if (EsrMode::MODE_S->value === $mode->value) {
-                $payment_text_data .= "<br>\n" . $senderStreetOnly . " " . $senderBuildingNumber;
-                $payment_text_data .= "<br>\n" . $senderPostalCode . " " . $senderCity;
+                $payment_text_data .= "<br>\n" . trim($senderStreetOnly . " " . $senderBuildingNumber);
+                $payment_text_data .= "<br>\n" . trim($senderPostalCode . " " . $senderCity);
             } elseif (EsrMode::MODE_K->value === $mode->value) {
-                $payment_text_data .= "<br>\n" . $senderAddress1;
-                $payment_text_data .= "<br>\n" . $senderAddress2;
+                if (!empty($senderAddress1))
+                    $payment_text_data .= "<br>\n" . $senderAddress1;
+                if (!empty($senderAddress2))
+                    $payment_text_data .= "<br>\n" . $senderAddress2;
             }
             // $sender['country']
             $payment_text_data .= "</p>";
