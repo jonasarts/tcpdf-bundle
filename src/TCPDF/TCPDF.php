@@ -113,14 +113,25 @@ class TCPDF extends \TCPDF
         PDFHelper::addAddressBoxC5($this, $address, $pp, $debug);
     }
 
+    public function addAddressBoxC5Left4Pingen(string $address, bool $debug = false): void
+    {
+        /**
+         * Adressbereich (X/Y/W/H) 22/60/85.5/25.5mm
+         */
+        PDFHelper::addAddressBoxC5Left4Pingen($this, $address, $debug);
+    }
+
     public function addAddressBoxC5Right(string $address, array $pp = null, bool $debug = false): void
     {
         PDFHelper::addAddressBoxC5Right($this, $address, $pp, $debug);
     }
 
-    public function addAddressBoxC5Right4Pingen(string $address, array $pp = null): void
+    public function addAddressBoxC5Right4Pingen(string $address, bool $debug = false): void
     {
-        PDFHelper::addAddressBoxC5Right4Pingen($this, $address, $pp);
+        /**
+         * Adressbereich (X/Y/W/H) 118/60/85.5/25.5mm
+         */
+        PDFHelper::addAddressBoxC5Right4Pingen($this, $address, $debug);
     }
 
     public function addAddressBoxC65(string $address, array $pp = null, bool $debug = false): void

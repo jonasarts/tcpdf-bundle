@@ -82,12 +82,59 @@ abstract class PDFHelper
 
         if ($debug) {
             $pdf->Rect($rect->x, $rect->y, $rect->width, $rect->height);
-            //$pdf->Rect($rectWithPadding->x, $rectWithPadding->y, $rectWithPadding->width, $rectWithPadding->height);
         }
     }
 
     /**
-     * or C5 couvert with window left
+     * Adressbox for C5 Left - shifted for Pingen
+     *
+     * https://help.pingen.com/de/vorlagen-und-postanforderungen/layout-anforderungen
+     * - Adressbereich (X/Y/W/H) 22/60/85.5/25.5mm
+     *
+     * @param TCPDF $pdf
+     * @param string $address
+     * @param bool $debug
+     * @return void
+     */
+    public static function addAddressBoxC5Left4Pingen(TCPDF $pdf, string $address, bool $debug = false): void
+    {
+        // c5 couvert with window left
+
+        $x = 22;
+        $y = 60;
+        $w = 85.5;
+        $h = 25.5;
+        $p = 0;
+        $pl = 0;
+
+        //$pdf->Rect($x, $y, $w, $h);
+
+        $x += $pl;
+        $y += $p;
+        $w -= ($p + $pl); // = 85.5
+        $h -= (2 * $p); // = 25.5
+
+        //$pdf->Rect($x, $y, $w, $h);
+
+        $x += $pl;
+        $y += $p;
+        $w -= ($p + $pl);
+        $h -= (2 * $p); // = 25.5
+
+        $pdf->setCellHeightRatio(1.25);
+
+        $pdf->SetFont(static::FONT_LIGHT, '', 11);
+        $pdf->MultiCell($w, $h, $address, 0, 'L', false, 1, $x, $y);
+
+        $pdf->setCellHeightRatio(1);
+
+        if ($debug) {
+            $pdf->Rect($x, $y, $w, $h);
+        }
+    }
+
+    /**
+     * or C5 couvert with window right
      */
     public static function addAddressBoxC5Right(TCPDF $pdf, string $address, array $pp = null, bool $debug = false): void
     {
@@ -104,31 +151,25 @@ abstract class PDFHelper
         $rectWithPadding = clone $rect;
         $rectWithPadding->inset($padding);
 
-        /*
-        $padding_left = 20;
-        $rectWithPadding->x += $padding_left - $padding;
-        $rectWithPadding->width -= $padding_left - $padding;
-        */
-
         static::fillRectWithAddressBox($pdf, $rectWithPadding, $address, null, $pp);
 
         if ($debug) {
             $pdf->Rect($rect->x, $rect->y, $rect->width, $rect->height);
-            //$pdf->Rect($rectWithPadding->x, $rectWithPadding->y, $rectWithPadding->width, $rectWithPadding->height);
         }
     }
 
     /**
      * Adressbox for C5 Right - shifted for Pingen
      *
+     * https://help.pingen.com/de/vorlagen-und-postanforderungen/layout-anforderungen
      * - Adressbereich (X/Y/W/H) 118/60/85.5/25.5mm
      *
      * @param TCPDF $pdf
      * @param string $address
-     * @param array|null $pp
+     * @param bool $debug
      * @return void
      */
-    public static function addAddressBoxC5Right4Pingen(TCPDF $pdf, string $address, array $pp = null): void
+    public static function addAddressBoxC5Right4Pingen(TCPDF $pdf, string $address, bool $debug = false): void
     {
         // c5 couvert with window right
         //
@@ -148,30 +189,19 @@ abstract class PDFHelper
 
         $x += $pl;
         $y += $p;
-        $w -= ($p + $pl);
+        $w -= ($p + $pl); // = 85.5
         $h -= (2 * $p); // = 25.5
 
         $pdf->setCellHeightRatio(1.25);
 
-        if (is_array($pp)) {
-
-            //$pdf->Rect($x, $y, $w, 5);
-            $pdf->Line($x, $y+5, $x+$w, $y+5);
-
-            $pdf->SetFont(static::FONT_BOLD, '', 12);
-            $pdf->MultiCell($w, 5, $pp['pp'], 0, 'L', false, 1, $x, $y);
-            $pdf->SetFont(static::FONT_LIGHT, '', 9);
-            // MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
-            $pdf->MultiCell($w-9, 5, $pp['sender'], 0, 'L', false, 1, $x+9, $y, true, 0, false, true, 5, 'B');
-            $pdf->MultiCell($w, 5, "POST CH AG", 0, 'R', false, 1, $x, $y, true, 0, false, true, 5, 'B');
-
-            $y += 5+3;
-        }
-
         $pdf->SetFont(static::FONT_LIGHT, '', 11);
-        $pdf->MultiCell($w, 35, $address, 0, 'L', false, 1, $x, $y);
+        $pdf->MultiCell($w, $h, $address, 0, 'L', false, 1, $x, $y);
 
         $pdf->setCellHeightRatio(1);
+
+        if ($debug) {
+            $pdf->Rect($x, $y, $w, $h);
+        }
     }
 
     /**
