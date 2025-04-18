@@ -441,10 +441,10 @@ abstract class PDFHelper
         $recipt_text_data = "<h1 style=\"font-size: 6pt; font-weight: bold;\">Konto / Zahlbar an</h1>";
         $recipt_text_data .= "<p>" . $iban_formatted;
         $recipt_text_data .= "<br>\n" . $recipientName;
-        if ('S' === $mode) {
+        if (EsrMode::MODE_S->value === $mode->value) {
             $recipt_text_data .= "<br>\n" . $recipientStreetOnly . " " . $recipientBuildingNumber;
             $recipt_text_data .= "<br>\n" . $recipientPostalCode . " " . $recipientCity;
-        } elseif ('K' === $mode) {
+        } elseif (EsrMode::MODE_K->value === $mode->value) {
             $recipt_text_data .= "<br>\n" . $recipientAddress1;
             $recipt_text_data .= "<br>\n" . $recipientAddress2;
         }
@@ -456,10 +456,10 @@ abstract class PDFHelper
         $recipt_text_data .= "<h1 style=\"font-size:6pt; font-weight: bold;\">Zahlbar durch</h1>";
         if (!empty($senderName)) {
             $recipt_text_data .= "<p>" . $senderName;
-            if ('S' === $mode) {
+            if (EsrMode::MODE_S->value === $mode->value) {
                 $recipt_text_data .= "<br>\n" . $senderStreetOnly . " " . $senderBuildingNumber;
                 $recipt_text_data .= "<br>\n" . $senderPostalCode . " " . $senderCity;
-            } elseif ('K' === $mode) {
+            } elseif (EsrMode::MODE_K->value === $mode->value) {
                 $recipt_text_data .= "<br>\n" . $senderAddress1;
                 $recipt_text_data .= "<br>\n" . $senderAddress2;
             }
@@ -474,10 +474,10 @@ abstract class PDFHelper
         $payment_text_data = "<h1 style=\"font-size: 7pt; font-weight: bold;\">Konto / Zahlbar an</h1>";
         $payment_text_data .= "<p>" . $iban_formatted;
         $payment_text_data .= "<br>\n" . $recipientName;
-        if ('S' === $mode) {
+        if (EsrMode::MODE_S->value === $mode->value) {
             $payment_text_data .= "<br>\n" . $recipientStreetOnly . " " . $recipientBuildingNumber;
             $payment_text_data .= "<br>\n" . $recipientPostalCode . " " . $recipientCity;
-        } elseif ('K' === $mode) {
+        } elseif (EsrMode::MODE_K->value === $mode->value) {
             $payment_text_data .= "<br>\n" . $recipientAddress1;
             $payment_text_data .= "<br>\n" . $recipientAddress2;
         }
@@ -493,10 +493,10 @@ abstract class PDFHelper
         $payment_text_data .= "<h1 style=\"font-size: 7pt; font-weight: bold;\">Zahlbar durch</h1>";
         if (!empty($senderName)) {
             $payment_text_data .= "<p>" . $senderName;
-            if ('S' === $mode) {
+            if (EsrMode::MODE_S->value === $mode->value) {
                 $payment_text_data .= "<br>\n" . $senderStreetOnly . " " . $senderBuildingNumber;
                 $payment_text_data .= "<br>\n" . $senderPostalCode . " " . $senderCity;
-            } elseif ('K' === $mode) {
+            } elseif (EsrMode::MODE_K->value === $mode->value) {
                 $payment_text_data .= "<br>\n" . $senderAddress1;
                 $payment_text_data .= "<br>\n" . $senderAddress2;
             }
