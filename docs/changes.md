@@ -7,8 +7,8 @@ V 7.0.0
 - Requires PHP 8.2
 - Updated for Symfony 7 branch
 
-V 6.4.9
--------
+V 6.4.10
+--------
 
 - Added PDFHelper methods
 - Renamed fillWithAddressBox() to fillRectWithAddressBox()
