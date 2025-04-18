@@ -376,8 +376,8 @@ abstract class PDFHelper
         // +format S
         $recipientStreetOnly = mb_strimwidth($recipientStreet ?? "", 0, 70 - 3, "...", 'UTF-8');
         $recipientBuildingNumber = mb_strimwidth($recipientBuildingNumber ?? "", 0, 16 - 3, "...", 'UTF-8');
-        $recipientPostalCode = mb_strimwidth($recipientPostalCode, 0, 16 - 3, "...", 'UTF-8');
-        $recipientCity = mb_strimwidth($recipientCity, 0, 35 - 3, "...", 'UTF-8');
+        $recipientPostalCode = mb_strimwidth($recipientPostalCode ?? "", 0, 16 - 3, "...", 'UTF-8');
+        $recipientCity = mb_strimwidth($recipientCity ?? "", 0, 35 - 3, "...", 'UTF-8');
 
         // format K
         $senderName = mb_strimwidth($senderName, 0, 70 - 3, "...", 'UTF-8');
@@ -387,10 +387,10 @@ abstract class PDFHelper
         // +format S
         $senderStreetOnly = mb_strimwidth($senderStreet ?? "", 0, 70 - 3, "...", 'UTF-8');
         $senderBuildingNumber = mb_strimwidth($senderBuildingNumber ?? "", 0, 16 - 3, "...", 'UTF-8');
-        $senderPostalCode = mb_strimwidth($senderPostalCode, 0, 16 - 3, "...", 'UTF-8');
-        $senderCity = mb_strimwidth($senderCity, 0, 35 - 3, "...", 'UTF-8');
+        $senderPostalCode = mb_strimwidth($senderPostalCode ?? "", 0, 16 - 3, "...", 'UTF-8');
+        $senderCity = mb_strimwidth($senderCity ?? "", 0, 35 - 3, "...", 'UTF-8');
 
-        $subject = mb_strimwidth($subject, 0, 140 - 3, "...", 'UTF-8');
+        $subject = mb_strimwidth($subject ?? "", 0, 140 - 3, "...", 'UTF-8');
 
         //* standard K
         if (EsrMode::MODE_K->value === $mode->value) {
