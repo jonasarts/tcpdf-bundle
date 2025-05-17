@@ -362,6 +362,13 @@ abstract class PDFHelper
             throw new \Exception('not enough sender country code data');
         }
 
+        if (strlen($recipientCountryCode) > 2) {
+            throw new \Exception('recipient country code is not iso_3166_alpha2');
+        }
+        if (strlen($senderCountryCode) > 2) {
+            throw new \Exception('sender country code is not iso_3166_alpha2');
+        }
+
         //
 
         $debug = false;
