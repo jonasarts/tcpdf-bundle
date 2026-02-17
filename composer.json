@@ -15,7 +15,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=8.2",
-        "tecnickcom/tcpdf": "^6.8"
+        "tecnickcom/tcpdf": "^6.10"
     },
     "autoload": {
         "psr-4": {
