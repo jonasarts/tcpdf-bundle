@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace jonasarts\Bundle\TCPDFBundle\TCPDF;
 
-//require_once __DIR__ . '/../lib/technickcom/tcpdf/tcpdf.php';
-
 use Closure;
+use InvalidArgumentException;
+use jonasarts\Bundle\TCPDFBundle\TCPDF\Enum\EsrMode;
+use RuntimeException;
 
 /**
  * TCPDF Service
@@ -25,7 +26,7 @@ class TCPDF extends \TCPDF
     private ?Closure $header_closure = null;
     private ?Closure $footer_closure = null;
 
-    public function __construct($orientation='P', $unit='mm', $format='A4')
+    public function __construct(string $orientation='P', string $unit='mm', string $format='A4')
     {
         // construct the TCPDF class
         // __construct($orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false)
@@ -38,7 +39,7 @@ class TCPDF extends \TCPDF
     #region header & footer
 
     // Page header
-    public function Header()
+    public function Header(): void
     {
         if ($this->header_closure instanceof Closure) {
             $this->header_closure->call($this);
@@ -46,7 +47,7 @@ class TCPDF extends \TCPDF
     }
 
     // Page footer
-    public function Footer()
+    public function Footer(): void
     {
         if ($this->footer_closure instanceof Closure) {
             $this->footer_closure->call($this);
@@ -68,35 +69,34 @@ class TCPDF extends \TCPDF
     /* helpers */
 
     /**
-     * @throws \ReflectionException
+     *
      */
     public function getTextColor(): array
     {
         $r = new \ReflectionObject($this);
         $p = $r->getProperty('fgcolor');
-        $p->setAccessible(true);
 
         return $p->getValue($this);
     }
 
     /* create 'paper' methods */
 
-    public static function createA3($orientation='P'): self
+    public static function createA3(string $orientation='P'): self
     {
         return new self($orientation, 'mm', 'A3');
     }
 
-    public static function createA4($orientation='P'): self
+    public static function createA4(string $orientation='P'): self
     {
         return new self($orientation, 'mm', 'A4');
     }
 
-    public static function createA5($orientation='P'): self
+    public static function createA5(string $orientation='P'): self
     {
         return new self($orientation, 'mm', 'A5');
     }
 
-    public static function createA6($orientation='P'): self
+    public static function createA6(string $orientation='P'): self
     {
         return new self($orientation, 'mm', 'A6');
     }
@@ -108,39 +108,39 @@ class TCPDF extends \TCPDF
         PDFHelper::addDefaultFonts($this);
     }
 
-    public function addAddressBoxC5(string $address, array $pp = null, bool $debug = false): void
+    public function addAddressBoxC5(string $address, ?array $pp = null, bool $debug = false): void
     {
         PDFHelper::addAddressBoxC5($this, $address, $pp, $debug);
     }
 
     public function addAddressBoxC5Left4Pingen(string $address, bool $debug = false): void
     {
-        /**
-         * Adressbereich (X/Y/W/H) 22/60/85.5/25.5mm
-         */
+        // Adressbereich (X/Y/W/H) 22/60/85.5/25.5mm
         PDFHelper::addAddressBoxC5Left4Pingen($this, $address, $debug);
     }
 
-    public function addAddressBoxC5Right(string $address, array $pp = null, bool $debug = false): void
+    public function addAddressBoxC5Right(string $address, ?array $pp = null, bool $debug = false): void
     {
         PDFHelper::addAddressBoxC5Right($this, $address, $pp, $debug);
     }
 
     public function addAddressBoxC5Right4Pingen(string $address, bool $debug = false): void
     {
-        /**
-         * Adressbereich (X/Y/W/H) 118/60/85.5/25.5mm
-         */
+        // Adressbereich (X/Y/W/H) 118/60/85.5/25.5mm
         PDFHelper::addAddressBoxC5Right4Pingen($this, $address, $debug);
     }
 
-    public function addAddressBoxC65(string $address, array $pp = null, bool $debug = false): void
+    public function addAddressBoxC65(string $address, ?array $pp = null, bool $debug = false): void
     {
         PDFHelper::addAddressBoxC65($this, $address, $pp, $debug);
     }
 
+    /**
+     * @throws InvalidArgumentException if $mode string is not "S" or "K"
+     * @throws RuntimeException if country codes are invalid
+     */
     public function addQrCodeEsrFooter(
-        string $mode,
+        EsrMode|string $mode,
         string $recipientName,
         ?string $recipientAddress1,
         ?string $recipientAddress2,
@@ -206,8 +206,12 @@ class TCPDF extends \TCPDF
         );
     }
 
+    /**
+     * @throws InvalidArgumentException if $mode string is not "S" or "K"
+     * @throws RuntimeException if country codes are invalid
+     */
     public function addQrCodeEsrPage(
-        string $mode,
+        EsrMode|string $mode,
         string $recipientName,
         ?string $recipientAddress1,
         ?string $recipientAddress2,
@@ -234,7 +238,7 @@ class TCPDF extends \TCPDF
     ): void
     {
         $this->AddPage();
-        $this->SetAutoPageBreak(0);
+        $this->SetAutoPageBreak(false);
 
         $this->addQrCodeEsrFooter(
             $mode,

@@ -34,14 +34,12 @@ class Rect implements IteratorAggregate
         $this->y = $y;
         $this->width = $width;
         $this->height = $height;
-
-        return $this;
     }
 
     /**
      * A4 Portrait
      */
-    public static function A4($portrait = false): Rect
+    public static function A4(bool $portrait = false): Rect
     {
         $dim = new Rect();
 
@@ -61,8 +59,11 @@ class Rect implements IteratorAggregate
 
     /**
      * Inset the dimensions by the given margin
+     *
+     * @param float|int $margin
+     * @return Rect
      */
-    public function inset($margin): static
+    public function inset(float|int $margin): static
     {
         $this->x += $margin;
         $this->y += $margin;
@@ -73,11 +74,11 @@ class Rect implements IteratorAggregate
     }
 
     /**
-     * @param $x
-     * @param $y
-     * @return $this
+     * @param float|int $x
+     * @param float|int $y
+     * @return Rect
      */
-    public function offset($x, $y): static
+    public function offset(float|int $x, float|int $y): static
     {
         $this->x += $x;
         $this->y += $y;
@@ -87,8 +88,18 @@ class Rect implements IteratorAggregate
 
     /**
      * @return Rect
+     *
+     * @deprecated use copy() instead
      */
     public function clone(): Rect
+    {
+        return $this->copy();
+    }
+
+    /**
+     * @return Rect
+     */
+    public function copy(): Rect
     {
         return new Rect($this->x, $this->y, $this->width, $this->height);
     }

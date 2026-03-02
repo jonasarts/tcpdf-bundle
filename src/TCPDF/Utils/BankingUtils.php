@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace jonasarts\Bundle\TCPDFBundle\TCPDF\Utils;
 
+use RuntimeException;
+
 /**
  * BankingUtils
  */
@@ -14,7 +16,7 @@ abstract class BankingUtils
      *
      * as found on http://www.developers-guide.net/forums/5431,modulo10-rekursiv
      */
-    static public function modulo10(string $number): int
+    public static function modulo10(string $number): int
     {
         $table = [0, 9, 4, 6, 8, 2, 7, 1, 3, 5];
         $next = 0;
@@ -32,7 +34,7 @@ abstract class BankingUtils
      * Default: right aligned 5char blocks
      * For IBAN: breakStringIntoBlocks($iban, 4, false) = left aligned 4char blocks
      */
-    static public function breakStringIntoBlocks(string $string, int $blockSize = 5, bool $alignFromRight = true): string
+    public static function breakStringIntoBlocks(string $string, int $blockSize = 5, bool $alignFromRight = true): string
     {
         // if requested, lets reverse the string
         if ($alignFromRight) {
@@ -57,23 +59,23 @@ abstract class BankingUtils
      * @param string|null $bankingCustomerIdentification 6 digits (exact)
      * @param string $referenceNumber 20 digits (max))
      * @return string
-     * @throws \Exception
+     * @throws RuntimeException
      */
-    static public function generateESRReferenceNumber(?string $bankingCustomerIdentification, string $referenceNumber): string
+    public static function generateESRReferenceNumber(?string $bankingCustomerIdentification, string $referenceNumber): string
     {
         if (!is_null($bankingCustomerIdentification)) {
             if (strlen($bankingCustomerIdentification) > 6) {
-                throw new \Exception('banking customer identification has wrong size; > 6');
+                throw new RuntimeException('banking customer identification has wrong size; > 6');
             }
             if (strlen($bankingCustomerIdentification) < 6) {
-                throw new \Exception('banking customer identification has wrong size; < 6');
+                throw new RuntimeException('banking customer identification has wrong size; < 6');
             }
             if (strlen($referenceNumber) > (26 - strlen($bankingCustomerIdentification))) {
-                throw new \Exception('reference number has wrong size; > 26 - 6');
+                throw new RuntimeException('reference number has wrong size; > 26 - 6');
             }
         } else {
             if (strlen($referenceNumber) > 26) {
-                throw new \Exception('reference number has wrong size; > 26');
+                throw new RuntimeException('reference number has wrong size; > 26');
             }
         }
 

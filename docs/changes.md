@@ -1,6 +1,12 @@
 CHANGE LOG
 ==========
 
+V 7.0.2
+-------
+
+- Updates for PHP 8.3 compatibility
+- Code quality improvements in TCPDF and PDFHelper
+
 V 7.0.0
 -------
 

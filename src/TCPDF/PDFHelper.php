@@ -18,6 +18,7 @@ use jonasarts\Bundle\TCPDFBundle\TCPDF\Types\Align;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Types\Rect;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Types\VAlign;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Utils\BankingUtils;
+use RuntimeException;
 
 abstract class PDFHelper
 {
@@ -65,7 +66,7 @@ abstract class PDFHelper
      *
      * @param array|null $pp
      */
-    public static function addAddressBoxC5(TCPDF $pdf, string $address, array $pp = null, bool $debug = false): void
+    public static function addAddressBoxC5(TCPDF $pdf, string $address, ?array $pp = null, bool $debug = false): void
     {
         // c5 couvert with window left
         // w x h: 10cm x 4.5cm
@@ -136,7 +137,7 @@ abstract class PDFHelper
     /**
      * or C5 couvert with window right
      */
-    public static function addAddressBoxC5Right(TCPDF $pdf, string $address, array $pp = null, bool $debug = false): void
+    public static function addAddressBoxC5Right(TCPDF $pdf, string $address, ?array $pp = null, bool $debug = false): void
     {
 
         // c5 couvert with window right
@@ -209,7 +210,7 @@ abstract class PDFHelper
      *
      * for C6/5 document pocket with window right
      */
-    public static function addAddressBoxC65(TCPDF $pdf, string $address, array $pp = null, bool $debug = false): void
+    public static function addAddressBoxC65(TCPDF $pdf, string $address, ?array $pp = null, bool $debug = false): void
     {
 
         // c65 document pocket with window right
@@ -231,7 +232,7 @@ abstract class PDFHelper
     /**
      * Address box for labels
      */
-    private static function fillRectWithAddressBox(TCPDF $pdf, Rect $rect, string $address, string $sender = null, array $pp = null): void
+    private static function fillRectWithAddressBox(TCPDF $pdf, Rect $rect, string $address, ?string $sender = null, ?array $pp = null): void
     {
         $style = ['width' => 0.25, 'color' => [0, 0, 0, 100]];
         $pdf->setCellHeightRatio(1.25);
@@ -317,6 +318,35 @@ abstract class PDFHelper
         $pdf->Line($x + $w, $y + $h - $dy, $x + $w, $y + $h);
     }
 
+    /**
+     * @param TCPDF $pdf
+     * @param EsrMode|string $mode
+     * @param string $recipientName
+     * @param string|null $recipientAddress1
+     * @param string|null $recipientAddress2
+     * @param string|null $recipientStreet
+     * @param string|null $recipientBuildingNumber
+     * @param string|null $recipientPostalCode
+     * @param string|null $recipientCity
+     * @param string $recipientCountryCode
+     * @param string $senderName
+     * @param string|null $senderAddress1
+     * @param string|null $senderAddress2
+     * @param string|null $senderStreet
+     * @param string|null $senderBuildingNumber
+     * @param string|null $senderPostalCode
+     * @param string|null $senderCity
+     * @param string $senderCountryCode
+     * @param string $qr_iban
+     * @param string $iban
+     * @param int|null $amount
+     * @param string|null $reference
+     * @param string|null $subject
+     * @param string|null $asset_schere
+     * @param string|null $asset_kreuz
+     * @return void
+     * @throws RuntimeException
+     */
     public static function addQrCodeEsr(
         TCPDF $pdf,
         EsrMode|string $mode,
@@ -348,7 +378,7 @@ abstract class PDFHelper
         // validate mode (S / K)
         if (is_string($mode)) {
             if (!in_array($mode, ['S', 'K'])) {
-                throw new \RuntimeException();
+                throw new RuntimeException();
             }
 
             $mode = EsrMode::tryFrom($mode);
@@ -356,17 +386,17 @@ abstract class PDFHelper
 
         // validate data
         if (strlen($recipientCountryCode) < 2) {
-            throw new \Exception('not enough recipient country code data');
+            throw new RuntimeException('not enough recipient country code data');
         }
         if (strlen($senderCountryCode) < 2) {
-            throw new \Exception('not enough sender country code data');
+            throw new RuntimeException('not enough sender country code data');
         }
 
         if (strlen($recipientCountryCode) > 2) {
-            throw new \Exception('recipient country code is not iso_3166_alpha2');
+            throw new RuntimeException('recipient country code is not iso_3166_alpha2');
         }
         if (strlen($senderCountryCode) > 2) {
-            throw new \Exception('sender country code is not iso_3166_alpha2');
+            throw new RuntimeException('sender country code is not iso_3166_alpha2');
         }
 
         //
