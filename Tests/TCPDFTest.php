@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TCPDF bundle package.
  *
@@ -34,6 +36,25 @@ class TCPDFTest extends WebTestCase
 
         $this->assertTrue($num == 0);
     }
+    public function testGetTextColor()
+    {
+        $pdf = new \jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF();
+
+        // default text color should be black
+        $color = $pdf->getTextColor();
+        $this->assertIsArray($color);
+        $this->assertEquals(0, $color['R']);
+        $this->assertEquals(0, $color['G']);
+        $this->assertEquals(0, $color['B']);
+
+        // change text color and verify
+        $pdf->SetTextColor(255, 128, 64);
+        $color = $pdf->getTextColor();
+        $this->assertEquals(255, $color['R']);
+        $this->assertEquals(128, $color['G']);
+        $this->assertEquals(64, $color['B']);
+    }
+
     public function testCreateA4()
     {
         $pdf = new \jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF();

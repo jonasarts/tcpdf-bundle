@@ -52,10 +52,9 @@ abstract class PDFHelper
     {
         //AddFont( $family, $style = '', $fontfile = '', $subset = 'default' )
 
-        $pdf->AddFont(static::FONT_LIGHT, $style = '');
-        $pdf->AddFont(static::FONT_REGULAR, $style = '');
-        //$pdf->AddFont(static::FONT_MEDIUM, $style = '');
-        $pdf->AddFont(static::FONT_BOLD, $style = 'B');
+        $pdf->AddFont(static::FONT_LIGHT, '');
+        $pdf->AddFont(static::FONT_REGULAR, '');
+        $pdf->AddFont(static::FONT_BOLD, 'B');
 
     }
 
@@ -378,7 +377,7 @@ abstract class PDFHelper
         // validate mode (S / K)
         if (is_string($mode)) {
             if (!in_array($mode, ['S', 'K'])) {
-                throw new RuntimeException();
+                throw new RuntimeException(sprintf('Invalid ESR mode "%s", expected "S" or "K"', $mode));
             }
 
             $mode = EsrMode::tryFrom($mode);

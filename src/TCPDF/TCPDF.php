@@ -73,10 +73,7 @@ class TCPDF extends \TCPDF
      */
     public function getTextColor(): array
     {
-        $r = new \ReflectionObject($this);
-        $p = $r->getProperty('fgcolor');
-
-        return $p->getValue($this);
+        return $this->fgcolor;
     }
 
     /* create 'paper' methods */
