@@ -7,7 +7,7 @@ use Rector\Config\RectorConfig;
 return RectorConfig::configure()
     ->withPaths([
         __DIR__ . '/src',
-        __DIR__ . '/Tests',
+        __DIR__ . '/tests',
     ])
     ->withRootFiles()
     // PHP 8.4 language-level migration set.
