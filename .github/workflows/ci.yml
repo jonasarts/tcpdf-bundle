@@ -20,19 +20,17 @@ jobs:
         with:
           php-version: '8.4'
           extensions: ctype, mbstring, gd
-          tools: composer:v2, composer-normalize, composer-require-checker, composer-unused
+          tools: composer:v2, composer-require-checker, composer-unused
           coverage: none
 
       - name: Validate composer.json
         run: composer validate --strict
 
-      - name: Check composer.json normalization
-        run: |
-          composer global config allow-plugins.ergebnis/composer-normalize true
-          composer normalize --dry-run --diff
-
       - name: Install dependencies
         run: composer update --prefer-dist --no-progress
+
+      - name: Check composer.json normalization
+        run: composer normalize --dry-run --diff
 
       - name: PHPStan
         run: composer phpstan
