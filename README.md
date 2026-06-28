@@ -1,21 +1,33 @@
 tcpdf-bundle
 ============
 
-This bundle provides a simplified access to the TCPDF php class for the symfony framework.
+Simplified access to the TCPDF PHP class for the Symfony framework, with helpers
+for the Swiss QR-bill.
 
-[![Latest Stable Version](https://poser.pugx.org/jonasarts/tcpdf-bundle/v/stable.png)](https://packagist.org/packages/jonasarts/tcpdf-bundle)
+[![Latest Stable Version](https://poser.pugx.org/jonasarts/tcpdf-bundle/v)](https://packagist.org/packages/jonasarts/tcpdf-bundle)
+[![Total Downloads](https://poser.pugx.org/jonasarts/tcpdf-bundle/downloads)](https://packagist.org/packages/jonasarts/tcpdf-bundle)
+[![License](https://poser.pugx.org/jonasarts/tcpdf-bundle/license)](https://packagist.org/packages/jonasarts/tcpdf-bundle)
+[![CI](https://github.com/jonasarts/tcpdf-bundle/actions/workflows/ci.yml/badge.svg)](https://github.com/jonasarts/tcpdf-bundle/actions/workflows/ci.yml)
+
+Requires PHP 8.4 and Symfony `^7.0 || ^8.0`.
 
 Installation
 ------------
 
-All the installation instructions are located in the [documentation](https://github.com/jonasarts/tcpdf-bundle/blob/master/docs/index.md).
+All installation instructions are in the [documentation](docs/index.md).
+
+Documentation
+-------------
+
+* [Documentation index](docs/index.md)
+* [Layout helpers & DTOs](docs/03-layout-helpers.md)
+* [Change log](CHANGELOG.md)
 
 License
 -------
 
-This bundle is under the MIT license. See the complete license in the bundle:
+This bundle is released under the MIT license. See [LICENSE](LICENSE).
 
-    LICENSE
-
-The TCPDF php class is under the GNU Lesser General Public License version 3. [TCPDF Website](http://www.tcpdf.org)  
-Read their included [license](https://github.com/jonasarts/tcpdf-bundle/blob/master/lib/LICENSE.TXT).
+The underlying TCPDF library ([tecnickcom/tcpdf](https://packagist.org/packages/tecnickcom/tcpdf),
+[tcpdf.org](https://tcpdf.org)) is licensed under the GNU LGPL v3 and is pulled
+in as a Composer dependency.

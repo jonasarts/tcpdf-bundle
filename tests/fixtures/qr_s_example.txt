@@ -1,0 +1,33 @@
+SPC
+0200
+1
+CH5800791123000889012
+S
+Robert Schneider AG
+Rue du Lac
+1268/2/22
+2501
+Biel
+CH
+
+
+
+
+
+
+
+
+CHF
+S
+Pia-Maria Rutschmann-Schnyder
+Grosse Marktgasse
+28
+9400
+Rorschach
+CH
+NON
+
+
+EPD
+
+

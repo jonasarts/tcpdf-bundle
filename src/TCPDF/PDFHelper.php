@@ -13,18 +13,24 @@ declare(strict_types=1);
 
 namespace jonasarts\Bundle\TCPDFBundle\TCPDF;
 
+use InvalidArgumentException;
+use jonasarts\Bundle\TCPDFBundle\TCPDF\Dto\Address;
+use jonasarts\Bundle\TCPDFBundle\TCPDF\Dto\AddressBoxOptions;
+use jonasarts\Bundle\TCPDFBundle\TCPDF\Dto\EsrPayment;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Enum\EsrMode;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Types\Align;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Types\Rect;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Types\VAlign;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Utils\BankingUtils;
-use RuntimeException;
 
 abstract class PDFHelper
 {
     final public const FONT_LIGHT = 'helvetica';
+
     final public const FONT_REGULAR = 'helvetica';
+
     final public const FONT_MEDIUM = 'helvetica';
+
     final public const FONT_BOLD = 'helveticaB';
 
     public static function addDebugGrid(TCPDF &$pdf): void
@@ -50,20 +56,19 @@ abstract class PDFHelper
 
     public static function addDefaultFonts(TCPDF $pdf): void
     {
-        //AddFont( $family, $style = '', $fontfile = '', $subset = 'default' )
+        // AddFont( $family, $style = '', $fontfile = '', $subset = 'default' )
 
-        $pdf->AddFont(static::FONT_LIGHT, '');
-        $pdf->AddFont(static::FONT_REGULAR, '');
-        $pdf->AddFont(static::FONT_BOLD, 'B');
-
+        $pdf->AddFont(self::FONT_LIGHT, '');
+        $pdf->AddFont(self::FONT_REGULAR, '');
+        $pdf->AddFont(self::FONT_BOLD, 'B');
     }
 
     /**
-     * Address box for letters (with CompanyHeader)
+     * Address box for letters (with CompanyHeader).
      *
      * for C5 couvert with window left
      *
-     * @param array|null $pp
+     * @param array{pp: string, sender: string}|null $pp
      */
     public static function addAddressBoxC5(TCPDF $pdf, string $address, ?array $pp = null, bool $debug = false): void
     {
@@ -78,7 +83,7 @@ abstract class PDFHelper
         $rectWithPadding = clone $rect;
         $rectWithPadding->inset(5);
 
-        static::fillRectWithAddressBox($pdf, $rectWithPadding, $address, null, $pp);
+        self::fillRectWithAddressBox($pdf, $rectWithPadding, $address, null, $pp);
 
         if ($debug) {
             $pdf->Rect($rect->x, $rect->y, $rect->width, $rect->height);
@@ -86,15 +91,10 @@ abstract class PDFHelper
     }
 
     /**
-     * Adressbox for C5 Left - shifted for Pingen
+     * Adressbox for C5 Left - shifted for Pingen.
      *
      * https://help.pingen.com/de/vorlagen-und-postanforderungen/layout-anforderungen
      * - Adressbereich (X/Y/W/H) 22/60/85.5/25.5mm
-     *
-     * @param TCPDF $pdf
-     * @param string $address
-     * @param bool $debug
-     * @return void
      */
     public static function addAddressBoxC5Left4Pingen(TCPDF $pdf, string $address, bool $debug = false): void
     {
@@ -107,14 +107,10 @@ abstract class PDFHelper
         $p = 0;
         $pl = 0;
 
-        //$pdf->Rect($x, $y, $w, $h);
-
         $x += $pl;
         $y += $p;
         $w -= ($p + $pl); // = 85.5
         $h -= (2 * $p); // = 25.5
-
-        //$pdf->Rect($x, $y, $w, $h);
 
         $x += $pl;
         $y += $p;
@@ -123,7 +119,7 @@ abstract class PDFHelper
 
         $pdf->setCellHeightRatio(1.25);
 
-        $pdf->SetFont(static::FONT_LIGHT, '', 11);
+        $pdf->SetFont(self::FONT_LIGHT, '', 11);
         $pdf->MultiCell($w, $h, $address, 0, 'L', false, 1, $x, $y);
 
         $pdf->setCellHeightRatio(1);
@@ -134,11 +130,12 @@ abstract class PDFHelper
     }
 
     /**
-     * or C5 couvert with window right
+     * or C5 couvert with window right.
+     *
+     * @param array{pp: string, sender: string}|null $pp
      */
     public static function addAddressBoxC5Right(TCPDF $pdf, string $address, ?array $pp = null, bool $debug = false): void
     {
-
         // c5 couvert with window right
         // ... w x h: 10cm x 4.5cm
         // pos left: left / top: 10cm / 4.5cm
@@ -151,7 +148,7 @@ abstract class PDFHelper
         $rectWithPadding = clone $rect;
         $rectWithPadding->inset($padding);
 
-        static::fillRectWithAddressBox($pdf, $rectWithPadding, $address, null, $pp);
+        self::fillRectWithAddressBox($pdf, $rectWithPadding, $address, null, $pp);
 
         if ($debug) {
             $pdf->Rect($rect->x, $rect->y, $rect->width, $rect->height);
@@ -159,15 +156,10 @@ abstract class PDFHelper
     }
 
     /**
-     * Adressbox for C5 Right - shifted for Pingen
+     * Adressbox for C5 Right - shifted for Pingen.
      *
      * https://help.pingen.com/de/vorlagen-und-postanforderungen/layout-anforderungen
      * - Adressbereich (X/Y/W/H) 118/60/85.5/25.5mm
-     *
-     * @param TCPDF $pdf
-     * @param string $address
-     * @param bool $debug
-     * @return void
      */
     public static function addAddressBoxC5Right4Pingen(TCPDF $pdf, string $address, bool $debug = false): void
     {
@@ -185,8 +177,6 @@ abstract class PDFHelper
         $p = 0;
         $pl = 0;
 
-        //$pdf->Rect($x, $y, $w, $h);
-
         $x += $pl;
         $y += $p;
         $w -= ($p + $pl); // = 85.5
@@ -194,7 +184,7 @@ abstract class PDFHelper
 
         $pdf->setCellHeightRatio(1.25);
 
-        $pdf->SetFont(static::FONT_LIGHT, '', 11);
+        $pdf->SetFont(self::FONT_LIGHT, '', 11);
         $pdf->MultiCell($w, $h, $address, 0, 'L', false, 1, $x, $y);
 
         $pdf->setCellHeightRatio(1);
@@ -205,13 +195,14 @@ abstract class PDFHelper
     }
 
     /**
-     * Address box for delivery notes (with CompanyLogo)
+     * Address box for delivery notes (with CompanyLogo).
      *
      * for C6/5 document pocket with window right
+     *
+     * @param array{pp: string, sender: string}|null $pp
      */
     public static function addAddressBoxC65(TCPDF $pdf, string $address, ?array $pp = null, bool $debug = false): void
     {
-
         // c65 document pocket with window right
         // w x h: 9.5cm x 4.5cm
         // pos left: -
@@ -221,7 +212,7 @@ abstract class PDFHelper
         $rect = new Rect(105, 35, 95, 45);
         $rect->inset(5);
 
-        static::fillRectWithAddressBox($pdf, $rect, $address, null, $pp);
+        self::fillRectWithAddressBox($pdf, $rect, $address, null, $pp);
 
         if ($debug) {
             $pdf->Rect($rect->x, $rect->y, $rect->width, $rect->height);
@@ -229,31 +220,29 @@ abstract class PDFHelper
     }
 
     /**
-     * Address box for labels
+     * Address box for labels.
+     *
+     * @param array{pp: string, sender: string}|null $pp
      */
     private static function fillRectWithAddressBox(TCPDF $pdf, Rect $rect, string $address, ?string $sender = null, ?array $pp = null): void
     {
         $style = ['width' => 0.25, 'color' => [0, 0, 0, 100]];
         $pdf->setCellHeightRatio(1.25);
         $pdf->setCellPadding(0);
-        //$pdf->Rect(...$rect);
 
         $offset_y = 0;
 
         if (is_array($pp)) {
-            //$pdf->Rect($x, $y, $w, 5);
             $pdf->Line($rect->x, $rect->y + 5, $rect->x + $rect->width, $rect->y + 5, $style);
 
-            $pdf->SetFont(static::FONT_BOLD, size: 11);
+            $pdf->SetFont(self::FONT_BOLD, size: 11);
             $pdf->MultiCell(9, 5, $pp['pp'], 0, Align::LEFT->value, false, 0, $rect->x, $rect->y, true, 0, false, true, 5, VAlign::BOTTOM->value);
-            $pdf->SetFont(static::FONT_LIGHT, size: 9);
-            $pdf->MultiCell($rect->width - 9 - 21, 5, $pp['sender'], 0,  Align::LEFT->value, false, 0, $rect->x + 9, $rect->y, true, 0, false, true, 5, VAlign::BOTTOM->value);
-            $pdf->MultiCell(21, 5, "POST CH AG", 0,  Align::RIGHT->value, false, 0, $rect->x + $rect->width - 21, $rect->y, true, 0, false, true, 5, VAlign::BOTTOM->value);
+            $pdf->SetFont(self::FONT_LIGHT, size: 9);
+            $pdf->MultiCell($rect->width - 9 - 21, 5, $pp['sender'], 0, Align::LEFT->value, false, 0, $rect->x + 9, $rect->y, true, 0, false, true, 5, VAlign::BOTTOM->value);
+            $pdf->MultiCell(21, 5, 'POST CH AG', 0, Align::RIGHT->value, false, 0, $rect->x + $rect->width - 21, $rect->y, true, 0, false, true, 5, VAlign::BOTTOM->value);
 
             $offset_y += 5 + 3;
         } else {
-            //$pdf->Line($rect->x, $rect->y + 5, $rect->x + $rect->width, $rect->y + 5, $style);
-
             $offset_y += 5 + 3;
         }
 
@@ -262,7 +251,7 @@ abstract class PDFHelper
 
         $txt = array_shift($a);
 
-        $pdf->SetFont(static::FONT_LIGHT, size: 11);
+        $pdf->SetFont(self::FONT_LIGHT, size: 11);
         $pdf->SetTextColor(0, 0, 0, 100);
         $pdf->MultiCell($rect->width, 5, $txt, 0, Align::LEFT->value, false, 1, $rect->x, $rect->y + $offset_y);
 
@@ -270,18 +259,17 @@ abstract class PDFHelper
 
         $txt = implode("\n", $a);
 
-        $pdf->SetFont(static::FONT_LIGHT, size: 11);
+        $pdf->SetFont(self::FONT_LIGHT, size: 11);
         $pdf->MultiCell($rect->width, $rect->height, $txt, 0, Align::LEFT->value, false, 1, $rect->x, $rect->y + $offset_y);
 
-
         // sender
-        if (!empty($sender)) {
+        if (!in_array($sender, [null, '', '0'], true)) {
             $sender_field_height = 5;
 
-            $pdf->SetFont(static::FONT_LIGHT, size: 9);
+            $pdf->SetFont(self::FONT_LIGHT, size: 9);
             $pdf->SetTextColor(0, 0, 0, 80);
             $txt = $sender;
-            $pdf->MultiCell($rect->width, $sender_field_height, $txt, 0, Align::LEFT->value, false, 1, $rect->x, $rect->y +  $rect->height - $sender_field_height);
+            $pdf->MultiCell($rect->width, $sender_field_height, $txt, 0, Align::LEFT->value, false, 1, $rect->x, $rect->y + $rect->height - $sender_field_height);
             $style = ['width' => 0.1, 'color' => [0, 0, 0, 80]];
             $pdf->Line(
                 $rect->x,
@@ -318,33 +306,9 @@ abstract class PDFHelper
     }
 
     /**
-     * @param TCPDF $pdf
-     * @param EsrMode|string $mode
-     * @param string $recipientName
-     * @param string|null $recipientAddress1
-     * @param string|null $recipientAddress2
-     * @param string|null $recipientStreet
-     * @param string|null $recipientBuildingNumber
-     * @param string|null $recipientPostalCode
-     * @param string|null $recipientCity
-     * @param string $recipientCountryCode
-     * @param string $senderName
-     * @param string|null $senderAddress1
-     * @param string|null $senderAddress2
-     * @param string|null $senderStreet
-     * @param string|null $senderBuildingNumber
-     * @param string|null $senderPostalCode
-     * @param string|null $senderCity
-     * @param string $senderCountryCode
-     * @param string $qr_iban
-     * @param string $iban
-     * @param int|null $amount
-     * @param string|null $reference
-     * @param string|null $subject
-     * @param string|null $asset_schere
-     * @param string|null $asset_kreuz
-     * @return void
-     * @throws RuntimeException
+     * Render a Swiss QR-bill (ESR) payment part + receipt at the bottom of the page.
+     *
+     * @throws InvalidArgumentException if $mode is not "S"/"K" or country codes are not ISO-3166 alpha-2
      */
     public static function addQrCodeEsr(
         TCPDF $pdf,
@@ -371,39 +335,38 @@ abstract class PDFHelper
         ?string $reference,
         ?string $subject,
         ?string $asset_schere = null,
-        ?string $asset_kreuz = null
-    ): void
-    {
+        ?string $asset_kreuz = null,
+    ): void {
         // validate mode (S / K)
         if (is_string($mode)) {
-            if (!in_array($mode, ['S', 'K'])) {
-                throw new RuntimeException(sprintf('Invalid ESR mode "%s", expected "S" or "K"', $mode));
+            $esrMode = EsrMode::tryFrom($mode);
+            if (!$esrMode instanceof EsrMode) {
+                throw new InvalidArgumentException(sprintf('Invalid ESR mode "%s", expected "S" or "K"', $mode));
             }
 
-            $mode = EsrMode::tryFrom($mode);
+            $mode = $esrMode;
         }
 
         // validate data
         if (strlen($recipientCountryCode) < 2) {
-            throw new RuntimeException('not enough recipient country code data');
+            throw new InvalidArgumentException('not enough recipient country code data');
         }
+
         if (strlen($senderCountryCode) < 2) {
-            throw new RuntimeException('not enough sender country code data');
+            throw new InvalidArgumentException('not enough sender country code data');
         }
 
         if (strlen($recipientCountryCode) > 2) {
-            throw new RuntimeException('recipient country code is not iso_3166_alpha2');
+            throw new InvalidArgumentException('recipient country code is not iso_3166_alpha2');
         }
+
         if (strlen($senderCountryCode) > 2) {
-            throw new RuntimeException('sender country code is not iso_3166_alpha2');
+            throw new InvalidArgumentException('sender country code is not iso_3166_alpha2');
         }
 
-        //
-
-        $debug = false;
-        // vendor/jonasarts/tcpdf-bundle/src/TCPDF/PDFHelper.php
-        $asset_image_schere = $asset_schere ?? __DIR__ . '/../../../../../assets/images/schere/schere.png';
-        $asset_image_kreuz = $asset_kreuz ?? __DIR__ . '/../../../../../assets/images/ch-kreuz_7mm/CH-Kreuz_7mm.png';
+        // resolve the bundled assets (caller may override via parameters)
+        $asset_image_schere = self::resolveAsset($asset_schere, 'schere.png');
+        $asset_image_kreuz = self::resolveAsset($asset_kreuz, 'ch-kreuz.png');
 
         $font_size = 9; // base font size / receipt is -1 of base size / payment is = base size
 
@@ -411,60 +374,54 @@ abstract class PDFHelper
         $senderName = trim($senderName);
 
         // amount
-        if (!$amount) {
-            $str_amount = "0.00";
-        } else {
-            $str_amount = sprintf("%0.2f", $amount / 100);
-        }
+        $str_amount = $amount ? sprintf('%0.2f', $amount / 100) : '0.00';
 
         // reference
-        $reference = trim($reference);
-        if (!empty($reference)) {
+        $reference = trim($reference ?? '');
+        if ('' !== $reference && '0' !== $reference) {
             $iban_ = $qr_iban; // CH***
             $iban_parts = str_split($qr_iban, 4);
-            $iban_formatted = join(" ", $iban_parts);
+            $iban_formatted = implode(' ', $iban_parts);
 
             // QR esr reference does no longer need the banking customer identification (no bic)
             $referenceNumber_formatted = BankingUtils::breakStringIntoBlocks($reference, 5, true);
         } else {
             $iban_ = $iban; // CH***
             $iban_parts = str_split($iban, 4);
-            $iban_formatted = join(" ", $iban_parts);
+            $iban_formatted = implode(' ', $iban_parts);
 
-            $referenceNumber_formatted = "";
+            $referenceNumber_formatted = '';
         }
 
         // subject
-        $subject = trim($subject);
-        $subject = mb_strimwidth($subject ?? "", 0, 140 - 3, "...", 'UTF-8');
+        $subject = trim($subject ?? '');
+        $subject = mb_strimwidth($subject, 0, 140 - 3, '...', 'UTF-8');
 
         // format K
-        $recipientName = mb_strimwidth($recipientName, 0, 70 - 3, "...", 'UTF-8');
-        $recipientAddress1 = mb_strimwidth($recipientAddress1 ?? "", 0, 70-3, "...", 'UTF-8');
-        $recipientAddress2 = mb_strimwidth($recipientAddress2 ?? "", 0, 70-3, "...", 'UTF-8');
-        //$recipientCountryCode = $recipientCountryCode;
+        $recipientName = mb_strimwidth($recipientName, 0, 70 - 3, '...', 'UTF-8');
+        $recipientAddress1 = mb_strimwidth($recipientAddress1 ?? '', 0, 70 - 3, '...', 'UTF-8');
+        $recipientAddress2 = mb_strimwidth($recipientAddress2 ?? '', 0, 70 - 3, '...', 'UTF-8');
 
         // format S
-        $recipientStreetOnly = mb_strimwidth($recipientStreet ?? "", 0, 70 - 3, "...", 'UTF-8');
-        $recipientBuildingNumber = mb_strimwidth($recipientBuildingNumber ?? "", 0, 16 - 3, "...", 'UTF-8');
-        $recipientPostalCode = mb_strimwidth($recipientPostalCode ?? "", 0, 16 - 3, "...", 'UTF-8');
-        $recipientCity = mb_strimwidth($recipientCity ?? "", 0, 35 - 3, "...", 'UTF-8');
+        $recipientStreetOnly = mb_strimwidth($recipientStreet ?? '', 0, 70 - 3, '...', 'UTF-8');
+        $recipientBuildingNumber = mb_strimwidth($recipientBuildingNumber ?? '', 0, 16 - 3, '...', 'UTF-8');
+        $recipientPostalCode = mb_strimwidth($recipientPostalCode ?? '', 0, 16 - 3, '...', 'UTF-8');
+        $recipientCity = mb_strimwidth($recipientCity ?? '', 0, 35 - 3, '...', 'UTF-8');
 
         // format K
-        $senderName = mb_strimwidth($senderName, 0, 70 - 3, "...", 'UTF-8');
-        $senderAddress1 = mb_strimwidth($senderAddress1 ?? "", 0, 70-3, "...", 'UTF-8');
-        $senderAddress2 = mb_strimwidth($senderAddress2 ?? "", 0, 70-3, "...", 'UTF-8');
-        //$senderCountryCode = $senderCountryCode;
+        $senderName = mb_strimwidth($senderName, 0, 70 - 3, '...', 'UTF-8');
+        $senderAddress1 = mb_strimwidth($senderAddress1 ?? '', 0, 70 - 3, '...', 'UTF-8');
+        $senderAddress2 = mb_strimwidth($senderAddress2 ?? '', 0, 70 - 3, '...', 'UTF-8');
 
         // format S
-        $senderStreetOnly = mb_strimwidth($senderStreet ?? "", 0, 70 - 3, "...", 'UTF-8');
-        $senderBuildingNumber = mb_strimwidth($senderBuildingNumber ?? "", 0, 16 - 3, "...", 'UTF-8');
-        $senderPostalCode = mb_strimwidth($senderPostalCode ?? "", 0, 16 - 3, "...", 'UTF-8');
-        $senderCity = mb_strimwidth($senderCity ?? "", 0, 35 - 3, "...", 'UTF-8');
+        $senderStreetOnly = mb_strimwidth($senderStreet ?? '', 0, 70 - 3, '...', 'UTF-8');
+        $senderBuildingNumber = mb_strimwidth($senderBuildingNumber ?? '', 0, 16 - 3, '...', 'UTF-8');
+        $senderPostalCode = mb_strimwidth($senderPostalCode ?? '', 0, 16 - 3, '...', 'UTF-8');
+        $senderCity = mb_strimwidth($senderCity ?? '', 0, 35 - 3, '...', 'UTF-8');
 
-        //* standard K
-        if (EsrMode::MODE_K->value === $mode->value) {
-            $qr_data = static::getQrDataK(
+        // build the SPC QR payload (plain-text, byte-exact per QR-bill standard — never HTML-escaped)
+        $qr_data = match ($mode) {
+            EsrMode::MODE_K => self::getQrDataK(
                 $iban_,
                 $recipientName,
                 $recipientAddress1,
@@ -477,13 +434,8 @@ abstract class PDFHelper
                 $senderCountryCode,
                 $reference,
                 $subject
-            );
-        }
-        //*/
-
-        //* standard S
-        if (EsrMode::MODE_S->value === $mode->value) {
-            $qr_data = static::getQrDataS(
+            ),
+            EsrMode::MODE_S => static::getQrDataS(
                 $iban_,
                 $recipientName,
                 $recipientStreetOnly,
@@ -500,91 +452,97 @@ abstract class PDFHelper
                 $senderCountryCode,
                 $reference,
                 $subject
-            );
-        }
-        //*/
+            ),
+        };
 
-        //*
-        //$recipt_text_data = "<div style=\"background-color: red;\">";
-        $recipt_text_data = "<h1 style=\"font-size: 6pt; font-weight: bold;\">Konto / Zahlbar an</h1>";
-        $recipt_text_data .= "<p>" . $iban_formatted;
-        $recipt_text_data .= "<br>\n" . $recipientName;
-        if (EsrMode::MODE_S->value === $mode->value) {
-            $recipt_text_data .= "<br>\n" . trim($recipientStreetOnly . " " . $recipientBuildingNumber);
-            $recipt_text_data .= "<br>\n" . trim($recipientPostalCode . " " . $recipientCity);
-        } elseif (EsrMode::MODE_K->value === $mode->value) {
-            if (!empty($recipientAddress1))
-                $recipt_text_data .= "<br>\n" . $recipientAddress1;
-            if (!empty($recipientAddress2))
-                $recipt_text_data .= "<br>\n" . $recipientAddress2;
-        }
-        $recipt_text_data .= "</p>";
-        if (!empty($reference)) {
-            $recipt_text_data .= "<h1 style=\"font-size:6pt; font-weight: bold;\">Referenz</h1>";
-            $recipt_text_data .= "<p>" . $referenceNumber_formatted . "</p>";
-        }
-        $recipt_text_data .= "<h1 style=\"font-size:6pt; font-weight: bold;\">Zahlbar durch</h1>";
-        if (!empty($senderName)) {
-            $recipt_text_data .= "<p>" . $senderName;
-            if (EsrMode::MODE_S->value === $mode->value) {
-                $recipt_text_data .= "<br>\n" . trim($senderStreetOnly . " " . $senderBuildingNumber);
-                $recipt_text_data .= "<br>\n" . trim($senderPostalCode . " " . $senderCity);
-            } elseif (EsrMode::MODE_K->value === $mode->value) {
-                if (!empty($senderAddress1))
-                    $recipt_text_data .= "<br>\n" . $senderAddress1;
-                if (!empty($senderAddress2))
-                    $recipt_text_data .= "<br>\n" . $senderAddress2;
+        // receipt block (printed HTML — all dynamic values are HTML-escaped)
+        $recipt_text_data = '<h1 style="font-size: 6pt; font-weight: bold;">Konto / Zahlbar an</h1>';
+        $recipt_text_data .= '<p>'.self::escapeHtml($iban_formatted);
+        $recipt_text_data .= "<br>\n".self::escapeHtml($recipientName);
+        if (EsrMode::MODE_S === $mode) {
+            $recipt_text_data .= "<br>\n".self::escapeHtml(trim($recipientStreetOnly.' '.$recipientBuildingNumber));
+            $recipt_text_data .= "<br>\n".self::escapeHtml(trim($recipientPostalCode.' '.$recipientCity));
+        } elseif (EsrMode::MODE_K === $mode) {
+            if ('' !== $recipientAddress1 && '0' !== $recipientAddress1) {
+                $recipt_text_data .= "<br>\n".self::escapeHtml($recipientAddress1);
             }
-            // $sender['country']
-            $recipt_text_data .= "</p>";
-        }
-        //$recipt_text_data .= "</div>";
-        //*/
 
-        //*
-        //$payment_text_data = "<div style=\"background-color: red;\">";
-        $payment_text_data = "<h1 style=\"font-size: 7pt; font-weight: bold;\">Konto / Zahlbar an</h1>";
-        $payment_text_data .= "<p>" . $iban_formatted;
-        $payment_text_data .= "<br>\n" . $recipientName;
-        if (EsrMode::MODE_S->value === $mode->value) {
-            $payment_text_data .= "<br>\n" . trim($recipientStreetOnly . " " . $recipientBuildingNumber);
-            $payment_text_data .= "<br>\n" . trim($recipientPostalCode . " " . $recipientCity);
-        } elseif (EsrMode::MODE_K->value === $mode->value) {
-            if (!empty($recipientAddress1))
-                $payment_text_data .= "<br>\n" . $recipientAddress1;
-            if (!empty($recipientAddress2))
-                $payment_text_data .= "<br>\n" . $recipientAddress2;
-        }
-        $payment_text_data .= "</p>";
-        if (!empty($reference)) {
-            $payment_text_data .= "<h1 style=\"font-size:7pt; font-weight: bold;\">Referenz</h1>";
-            $payment_text_data .= "<p>" . $referenceNumber_formatted . "</p>";
-        }
-        if (!empty($subject)) {
-            $payment_text_data .= "<h1 style=\"font-size: 7pt; font-weight: bold;\">Zusätzliche Informationen</h1>";
-            $payment_text_data .= "<p>" . $subject . "</p>";
-        }
-        $payment_text_data .= "<h1 style=\"font-size: 7pt; font-weight: bold;\">Zahlbar durch</h1>";
-        if (!empty($senderName)) {
-            $payment_text_data .= "<p>" . $senderName;
-            if (EsrMode::MODE_S->value === $mode->value) {
-                $payment_text_data .= "<br>\n" . trim($senderStreetOnly . " " . $senderBuildingNumber);
-                $payment_text_data .= "<br>\n" . trim($senderPostalCode . " " . $senderCity);
-            } elseif (EsrMode::MODE_K->value === $mode->value) {
-                if (!empty($senderAddress1))
-                    $payment_text_data .= "<br>\n" . $senderAddress1;
-                if (!empty($senderAddress2))
-                    $payment_text_data .= "<br>\n" . $senderAddress2;
+            if ('' !== $recipientAddress2 && '0' !== $recipientAddress2) {
+                $recipt_text_data .= "<br>\n".self::escapeHtml($recipientAddress2);
             }
-            // $sender['country']
-            $payment_text_data .= "</p>";
         }
-        //$payment_text_data .= "</div>";
-        //*/
 
-        // for debug only:
-        //$recipt_text_data = "Angaben\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ";
-        //$payment_text_data = $recipt_text_data;
+        $recipt_text_data .= '</p>';
+        if ('' !== $reference && '0' !== $reference) {
+            $recipt_text_data .= '<h1 style="font-size:6pt; font-weight: bold;">Referenz</h1>';
+            $recipt_text_data .= '<p>'.self::escapeHtml($referenceNumber_formatted).'</p>';
+        }
+
+        $recipt_text_data .= '<h1 style="font-size:6pt; font-weight: bold;">Zahlbar durch</h1>';
+        if ('' !== $senderName && '0' !== $senderName) {
+            $recipt_text_data .= '<p>'.self::escapeHtml($senderName);
+            if (EsrMode::MODE_S === $mode) {
+                $recipt_text_data .= "<br>\n".self::escapeHtml(trim($senderStreetOnly.' '.$senderBuildingNumber));
+                $recipt_text_data .= "<br>\n".self::escapeHtml(trim($senderPostalCode.' '.$senderCity));
+            } elseif (EsrMode::MODE_K === $mode) {
+                if ('' !== $senderAddress1 && '0' !== $senderAddress1) {
+                    $recipt_text_data .= "<br>\n".self::escapeHtml($senderAddress1);
+                }
+
+                if ('' !== $senderAddress2 && '0' !== $senderAddress2) {
+                    $recipt_text_data .= "<br>\n".self::escapeHtml($senderAddress2);
+                }
+            }
+
+            $recipt_text_data .= '</p>';
+        }
+
+        // payment block (printed HTML — all dynamic values are HTML-escaped)
+        $payment_text_data = '<h1 style="font-size: 7pt; font-weight: bold;">Konto / Zahlbar an</h1>';
+        $payment_text_data .= '<p>'.self::escapeHtml($iban_formatted);
+        $payment_text_data .= "<br>\n".self::escapeHtml($recipientName);
+        if (EsrMode::MODE_S === $mode) {
+            $payment_text_data .= "<br>\n".self::escapeHtml(trim($recipientStreetOnly.' '.$recipientBuildingNumber));
+            $payment_text_data .= "<br>\n".self::escapeHtml(trim($recipientPostalCode.' '.$recipientCity));
+        } elseif (EsrMode::MODE_K === $mode) {
+            if ('' !== $recipientAddress1 && '0' !== $recipientAddress1) {
+                $payment_text_data .= "<br>\n".self::escapeHtml($recipientAddress1);
+            }
+
+            if ('' !== $recipientAddress2 && '0' !== $recipientAddress2) {
+                $payment_text_data .= "<br>\n".self::escapeHtml($recipientAddress2);
+            }
+        }
+
+        $payment_text_data .= '</p>';
+        if ('' !== $reference && '0' !== $reference) {
+            $payment_text_data .= '<h1 style="font-size:7pt; font-weight: bold;">Referenz</h1>';
+            $payment_text_data .= '<p>'.self::escapeHtml($referenceNumber_formatted).'</p>';
+        }
+
+        if ('' !== $subject && '0' !== $subject) {
+            $payment_text_data .= '<h1 style="font-size: 7pt; font-weight: bold;">Zusätzliche Informationen</h1>';
+            $payment_text_data .= '<p>'.self::escapeHtml($subject).'</p>';
+        }
+
+        $payment_text_data .= '<h1 style="font-size: 7pt; font-weight: bold;">Zahlbar durch</h1>';
+        if ('' !== $senderName && '0' !== $senderName) {
+            $payment_text_data .= '<p>'.self::escapeHtml($senderName);
+            if (EsrMode::MODE_S === $mode) {
+                $payment_text_data .= "<br>\n".self::escapeHtml(trim($senderStreetOnly.' '.$senderBuildingNumber));
+                $payment_text_data .= "<br>\n".self::escapeHtml(trim($senderPostalCode.' '.$senderCity));
+            } elseif (EsrMode::MODE_K === $mode) {
+                if ('' !== $senderAddress1 && '0' !== $senderAddress1) {
+                    $payment_text_data .= "<br>\n".self::escapeHtml($senderAddress1);
+                }
+
+                if ('' !== $senderAddress2 && '0' !== $senderAddress2) {
+                    $payment_text_data .= "<br>\n".self::escapeHtml($senderAddress2);
+                }
+            }
+
+            $payment_text_data .= '</p>';
+        }
 
         $tagvs = ['h1' => [0 => ['h' => 0.5, 'n' => 1], 1 => []], 'p' => [0 => ['h' => 0, 'n' => 0], 1 => ['h' => 0, 'n' => 0]]];
         $pdf->setHtmlVSpace($tagvs);
@@ -608,10 +566,6 @@ abstract class PDFHelper
         $y = $marginTop;
 
         // EZS
-        if ($debug) {
-            $pdf->Rect(0, $y + 0, $r_w, $r_h);
-            $pdf->Rect($r_w, $y + 0, $a4_w - $r_w, $r_h);
-        }
         $pdf->Line(0, $y, $a4_w, $y);
         $pdf->Line($r_w, $y, $r_w, $a4_h);
 
@@ -623,21 +577,14 @@ abstract class PDFHelper
 
         // - Titel
         $y += $p;
-        if ($debug) {
-            $pdf->Rect($x, $y, $r_w - $p - $leftBorder, 5);
-        }
         $pdf->SetFont('Helvetica', 'B', 11);
         $pdf->SetXY($x, $y);
-        $pdf->Cell($r_w - $p - $leftBorder, 4, "Empfangsschein");
+        $pdf->Cell($r_w - $p - $leftBorder, 4, 'Empfangsschein');
         $pdf->SetFont('Helvetica', size: $font_size - 1);
 
         // - Angaben
         $y += 5;
-        if ($debug) {
-            $pdf->Rect($x, $y, $r_w - $p - $leftBorder, 46 + 5 + 5);
-        }
         $pdf->SetXY($x, $y);
-        //$pdf->MultiCell($r_w - $p - $leftBorder, 46 + 5 + 5, $recipt_text_data, 0, 'L', false, 1, '', '', true, 0, false, true, 46 + 5 + 5);
         $pdf->writeHTMLCell(
             $r_w - $p - $leftBorder,
             46 + 5 + 5,
@@ -648,64 +595,38 @@ abstract class PDFHelper
         );
 
         // empty senderName -> 52x20mm rect
-        if (empty($senderName)) {
-
-            // calculate height - only for empty senderName
-            $fake = clone $pdf;
-            $fake->AddPage();
-            $fakeStartY = $fake->GetY();
-            $fake->writeHTMLCell(
-                $r_w - $p - $leftBorder,
-                0,
-                '',
-                '',
-                $payment_text_data,
-                0,
-                1,
-                false, true, 'L', true);
-            $fakeEndY = $fake->GetY();
-            $fakeHeight = $fakeEndY - $fakeStartY;
-
-            //debug
-            $pdf->Rect($x, $y, $r_w - $p - $leftBorder, $fakeHeight);
+        if ('' === $senderName || '0' === $senderName) {
+            $fakeHeight = self::measureHtmlCellHeight($pdf, $r_w - $p - $leftBorder, $payment_text_data);
 
             $pdf->SetXY($x, $y);
             $pdf->SetLineStyle(['width' => 0.27]);
-            static::drawCornerRect($pdf, $x-2, $y+$fakeHeight, 52, 20);
+            static::drawCornerRect($pdf, $x - 2, $y + $fakeHeight, 52, 20);
             $pdf->SetLineStyle(['width' => 0.25]);
         }
 
         // - Betrag
         $y += 46 + 5 + 5;
-        if ($debug) {
-            $pdf->Rect($x, $y, $r_w - $p - $leftBorder, 15);
-        }
         $pdf->SetFont('Helvetica', 'B', size: 7 - 1);
         $pdf->SetXY($x, $y);
-        $pdf->Cell($r_w - $p - $leftBorder, 4, "Währung");
+        $pdf->Cell($r_w - $p - $leftBorder, 4, 'Währung');
         $pdf->SetXY($r_w - $p - 30, $y);
-        $pdf->Cell($r_w - $p - $leftBorder, 4, "Betrag");
+        $pdf->Cell($r_w - $p - $leftBorder, 4, 'Betrag');
         $pdf->SetFont('Helvetica', size: $font_size - 1);
         $pdf->SetXY($x, $y + 5);
-        $pdf->Cell(10, 4, "CHF");
+        $pdf->Cell(10, 4, 'CHF');
         if ($amount > 0) {
             $pdf->Text($r_w - $p - 30, $y + 5, $str_amount);
         } else {
             // 30x10mm rect
             $pdf->SetLineStyle(['width' => 0.27]);
-            //$pdf->Rect($r_w - $p - 30, $y+4, 30, 10, '', array());
             static::drawCornerRect($pdf, $r_w - $p - 30, $y + 4, 30, 10);
             $pdf->SetLineStyle(['width' => 0.25]);
 
-
             // - Annahmestelle
             $y += 15;
-            if ($debug) {
-                $pdf->Rect($x, $y, $r_w - $p - $leftBorder, 19);
-            }
             $pdf->SetFont('Helvetica', 'B', size: 7 - 1);
             $pdf->SetXY($x, $y);
-            $pdf->Cell($r_w - $p - $leftBorder, 19, "Annahmestelle  ", 0, 0, 'R', false, '', 0, false, 'T', 'T');
+            $pdf->Cell($r_w - $p - $leftBorder, 19, 'Annahmestelle  ', 0, 0, 'R', false, '', 0, false, 'T', 'T');
         }
 
         $x = $r_w + $p;
@@ -715,67 +636,47 @@ abstract class PDFHelper
 
         // - Titel
         $y += $p;
-        if ($debug) {
-            $pdf->Rect($x, $y, 46 + $p, 5);
-        }
         $pdf->SetFont('Helvetica', 'B', size: 11);
         $pdf->SetXY($x, $y);
-        $pdf->Cell($a4_w - $r_w, 4, "Zahlteil");
+        $pdf->Cell($a4_w - $r_w, 4, 'Zahlteil');
         $pdf->SetFont('Helvetica', size: $font_size);
 
         // - QR Code - 46x46mm
         $y += 5 + $p;
-        if ($debug) {
-            $pdf->Rect($x, $y, 46, 46);
-        }
 
         // QR Code Style
         $style = ['border' => false, 'padding' => 0, 'fgcolor' => [0, 0, 0, 100], 'bgcolor' => false];
 
         // QRCODE,<quality>
         // quality -> L M Q H : low medium q? high error correction
-        if ($debug) {
-            dump($qr_data);
-        }
-
         $pdf->write2DBarcode($qr_data, 'QRCODE,M', $x, $y, 46, 46, $style, 'N');
         // SWISS QR
         $pdf->Image($asset_image_kreuz, $x + 23 - 3.5, $y + 23 - 3.5, 7, 7);
 
         // - Betrag
         $y += 46 + $p;
-        if ($debug) {
-            $pdf->Rect($x, $y, 46 + $p, 15);
-        }
         $pdf->SetFont('Helvetica', 'B', size: 7);
         $pdf->SetXY($x, $y);
-        $pdf->Cell(46 + $p, 4, "Währung       Betrag");
+        $pdf->Cell(46 + $p, 4, 'Währung       Betrag');
         $pdf->SetFont('Helvetica', size: $font_size);
         $pdf->SetXY($x, $y + 5);
-        $pdf->Cell(10, 4, "CHF");
+        $pdf->Cell(10, 4, 'CHF');
         if ($amount > 0) {
             // output amount
             $pdf->Text($x + $p + 11, $y + 5, $str_amount);
         } else {
             // 40x15mm rect
             $pdf->SetLineStyle(['width' => 0.27]);
-            //$pdf->Rect($x + 46 + $p - 40, $y + 4, 40, 15, '', array());
             static::drawCornerRect($pdf, $x + 46 + $p - 40, $y + 4, 40, 15);
             $pdf->SetLineStyle(['width' => 0.25]);
         }
 
         // - Weitere Informationen
         $y += 15;
-        if ($debug) {
-            $pdf->Rect($x, $y, $a4_w - $r_w - $p - $rightBorder, 19);
-        }
         // nothing yet
 
         // - Angaben - reset y
         $y = $marginTop + $p;
-        if ($debug) {
-            $pdf->Rect($x + 46 + $p, $y, $a4_w - $r_w - $p - 46 - $p - $rightBorder, $r_h - 2 * $p - 19);
-        }
         $pdf->SetFont('Helvetica', size: $font_size);
         $pdf->SetXY($x + 46 + $p, $y);
         $pdf->writeHTMLCell(
@@ -789,33 +690,114 @@ abstract class PDFHelper
         );
 
         // empty senderName -> 65x25mm rect
-        if (empty($senderName)) {
-
-            // calculate height - only for empty senderName
-            $fake = clone $pdf;
-            $fake->AddPage();
-            $fakeStartY = $fake->GetY();
-            $fake->writeHTMLCell(
-                $a4_w - $r_w - $p - 46 - $p - $rightBorder,
-                0,
-                '',
-                '',
-                $payment_text_data,
-                0,
-                1,
-                false, true, 'L', true);
-            $fakeEndY = $fake->GetY();
-            $fakeHeight = $fakeEndY - $fakeStartY;
-
-            //debug
-            $pdf->Rect($r_w + $p + 46 + $p, $y, $a4_w - $r_w - $p - 46 - $p - $rightBorder, $fakeHeight);
+        if ('' === $senderName || '0' === $senderName) {
+            $fakeHeight = self::measureHtmlCellHeight($pdf, $a4_w - $r_w - $p - 46 - $p - $rightBorder, $payment_text_data);
 
             $pdf->SetXY($x, $y);
             $pdf->SetLineStyle(['width' => 0.27]);
-            static::drawCornerRect($pdf, $x + 46 + $p, $y+$fakeHeight, 65, 25);
+            static::drawCornerRect($pdf, $x + 46 + $p, $y + $fakeHeight, 65, 25);
             $pdf->SetLineStyle(['width' => 0.25]);
         }
+    }
 
+    /**
+     * Typed, DTO-based entry point for the Swiss QR-bill (ESR).
+     *
+     * Thin adapter over {@see addQrCodeEsr()} — the positional method remains the
+     * single rendering core, this just unpacks the value objects. The country
+     * codes are already validated by the {@see Address} constructor.
+     *
+     * @throws InvalidArgumentException if $payment->mode and the address data are inconsistent
+     */
+    public static function addEsrPayment(TCPDF $pdf, EsrPayment $payment, Address $recipient, Address $sender): void
+    {
+        static::addQrCodeEsr(
+            $pdf,
+            $payment->mode,
+            $recipient->name,
+            $recipient->addressLine1,
+            $recipient->addressLine2,
+            $recipient->street,
+            $recipient->buildingNumber,
+            $recipient->postalCode,
+            $recipient->city,
+            $recipient->countryCode,
+            $sender->name,
+            $sender->addressLine1,
+            $sender->addressLine2,
+            $sender->street,
+            $sender->buildingNumber,
+            $sender->postalCode,
+            $sender->city,
+            $sender->countryCode,
+            $payment->qrIban,
+            $payment->iban,
+            $payment->amount,
+            $payment->reference,
+            $payment->subject,
+            $payment->assetSchere,
+            $payment->assetKreuz,
+        );
+    }
+
+    /**
+     * Typed, DTO-based address box. Thin adapter over the C5/C6.5 helpers; the
+     * positional helpers remain the rendering core.
+     */
+    public static function addAddressBox(TCPDF $pdf, string $format, string $address, ?AddressBoxOptions $options = null): void
+    {
+        $options ??= new AddressBoxOptions();
+        $pp = $options->toLegacyArray();
+        $debug = $options->debug;
+
+        match ($format) {
+            'C5' => static::addAddressBoxC5($pdf, $address, $pp, $debug),
+            'C5Right' => static::addAddressBoxC5Right($pdf, $address, $pp, $debug),
+            'C65' => static::addAddressBoxC65($pdf, $address, $pp, $debug),
+            'C5Left4Pingen' => static::addAddressBoxC5Left4Pingen($pdf, $address, $debug),
+            'C5Right4Pingen' => static::addAddressBoxC5Right4Pingen($pdf, $address, $debug),
+            default => throw new InvalidArgumentException(sprintf('Unknown address-box format "%s"', $format)),
+        };
+    }
+
+    /**
+     * Resolve a bundled image asset, allowing the caller to override the path.
+     *
+     * @throws InvalidArgumentException if the resolved file does not exist
+     */
+    private static function resolveAsset(?string $override, string $defaultFilename): string
+    {
+        // src/TCPDF/PDFHelper.php -> src/Resources/assets/images/<file>
+        $path = $override ?? \dirname(__DIR__).'/Resources/assets/images/'.$defaultFilename;
+
+        if (!is_file($path)) {
+            throw new InvalidArgumentException(sprintf('TCPDF asset not found: "%s"', $path));
+        }
+
+        return $path;
+    }
+
+    /**
+     * Measure the rendered height of an HTML cell without touching the real
+     * document: the measurement is performed on a clone (side-effect-free).
+     */
+    private static function measureHtmlCellHeight(TCPDF $pdf, float $width, string $html): float
+    {
+        $probe = clone $pdf;
+        $probe->AddPage();
+
+        $startY = $probe->GetY();
+        $probe->writeHTMLCell($width, 0, null, null, $html, 0, 1, false, true, 'L', true);
+
+        return $probe->GetY() - $startY;
+    }
+
+    /**
+     * Escape a dynamic value for safe inclusion in TCPDF's printed HTML.
+     */
+    private static function escapeHtml(?string $value): string
+    {
+        return htmlspecialchars($value ?? '', \ENT_QUOTES, 'UTF-8');
     }
 
     private static function getQrDataK(
@@ -830,27 +812,22 @@ abstract class PDFHelper
         string $senderAddress2,
         string $senderCountryCode,
         ?string $reference,
-        ?string $subject
-    ): string
-    {
+        ?string $subject,
+    ): string {
         // The "empty lines" in the QR Data are required by the QR IBAN Standard !!!
 
-        $str_amount = "";
+        $str_amount = '';
         if ($amount) {
-            $str_amount = sprintf("%0.2f", $amount / 100);
+            $str_amount = sprintf('%0.2f', $amount / 100);
         }
 
-        if (empty($reference)) {
-            $reference_type = "NON";
-        } else {
-            $reference_type = "QRR";
-        }
+        $reference_type = in_array($reference, [null, '', '0'], true) ? 'NON' : 'QRR';
 
-        $qr_data = <<<EOD
+        return <<<EOD
 SPC
 0200
 1
-$iban
+{$iban}
 K
 {$recipientName}
 {$recipientAddress1}
@@ -865,7 +842,7 @@ K
 
 
 
-$str_amount
+{$str_amount}
 CHF
 K
 {$senderName}
@@ -874,16 +851,14 @@ K
 
 
 {$senderCountryCode}
-$reference_type
-$reference
-$subject
+{$reference_type}
+{$reference}
+{$subject}
 EPD
 
 
 
 EOD;
-
-        return $qr_data;
     }
 
     public static function getQrDataS(
@@ -902,27 +877,22 @@ EOD;
         string $senderCity,
         string $senderCountryCode,
         ?string $reference,
-        ?string $subject
-    ): string
-    {
+        ?string $subject,
+    ): string {
         // The "empty lines" in the QR Data are required by the QR IBAN Standard !!!
 
-        $str_amount = "";
+        $str_amount = '';
         if ($amount) {
-            $str_amount = sprintf("%0.2f", $amount / 100);
+            $str_amount = sprintf('%0.2f', $amount / 100);
         }
 
-        if (empty($reference)) {
-            $reference_type = "NON";
-        } else {
-            $reference_type = "QRR";
-        }
+        $reference_type = in_array($reference, [null, '', '0'], true) ? 'NON' : 'QRR';
 
-        $qr_data = <<<EOD
+        return <<<EOD
 SPC
 0200
 1
-$iban
+{$iban}
 S
 {$recipientName}
 {$recipientStreet}
@@ -937,7 +907,7 @@ S
 
 
 
-$str_amount
+{$str_amount}
 CHF
 S
 {$senderName}
@@ -946,16 +916,13 @@ S
 {$senderPostalCode}
 {$senderCity}
 {$senderCountryCode}
-$reference_type
-$reference
-$subject 
+{$reference_type}
+{$reference}
+{$subject}
 EPD
 
 
 
 EOD;
-
-        return $qr_data;
     }
-
 }

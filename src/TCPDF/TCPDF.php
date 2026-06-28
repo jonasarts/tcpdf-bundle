@@ -15,30 +15,34 @@ namespace jonasarts\Bundle\TCPDFBundle\TCPDF;
 
 use Closure;
 use InvalidArgumentException;
+use jonasarts\Bundle\TCPDFBundle\TCPDF\Dto\Address;
+use jonasarts\Bundle\TCPDFBundle\TCPDF\Dto\EsrPayment;
 use jonasarts\Bundle\TCPDFBundle\TCPDF\Enum\EsrMode;
-use RuntimeException;
+use Override;
 
 /**
- * TCPDF Service
+ * TCPDF Service.
  */
 class TCPDF extends \TCPDF
 {
     private ?Closure $header_closure = null;
+
     private ?Closure $footer_closure = null;
 
-    public function __construct(string $orientation='P', string $unit='mm', string $format='A4')
+    public function __construct(string $orientation = 'P', string $unit = 'mm', string $format = 'A4')
     {
         // construct the TCPDF class
         // __construct($orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false)
-        
-        //parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        // parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         parent::__construct($orientation, $unit, $format, true, 'UTF-8', false);
     }
 
-    #region header & footer
+    // region header & footer
 
     // Page header
+    #[Override]
     public function Header(): void
     {
         if ($this->header_closure instanceof Closure) {
@@ -47,6 +51,7 @@ class TCPDF extends \TCPDF
     }
 
     // Page footer
+    #[Override]
     public function Footer(): void
     {
         if ($this->footer_closure instanceof Closure) {
@@ -64,12 +69,12 @@ class TCPDF extends \TCPDF
         $this->footer_closure = $closure;
     }
 
-    #endregion
+    // endregion
 
     /* helpers */
 
     /**
-     *
+     * @return array<string, int|float>
      */
     public function getTextColor(): array
     {
@@ -78,22 +83,22 @@ class TCPDF extends \TCPDF
 
     /* create 'paper' methods */
 
-    public static function createA3(string $orientation='P'): self
+    public static function createA3(string $orientation = 'P'): self
     {
         return new self($orientation, 'mm', 'A3');
     }
 
-    public static function createA4(string $orientation='P'): self
+    public static function createA4(string $orientation = 'P'): self
     {
         return new self($orientation, 'mm', 'A4');
     }
 
-    public static function createA5(string $orientation='P'): self
+    public static function createA5(string $orientation = 'P'): self
     {
         return new self($orientation, 'mm', 'A5');
     }
 
-    public static function createA6(string $orientation='P'): self
+    public static function createA6(string $orientation = 'P'): self
     {
         return new self($orientation, 'mm', 'A6');
     }
@@ -105,6 +110,9 @@ class TCPDF extends \TCPDF
         PDFHelper::addDefaultFonts($this);
     }
 
+    /**
+     * @param array{pp: string, sender: string}|null $pp
+     */
     public function addAddressBoxC5(string $address, ?array $pp = null, bool $debug = false): void
     {
         PDFHelper::addAddressBoxC5($this, $address, $pp, $debug);
@@ -116,6 +124,9 @@ class TCPDF extends \TCPDF
         PDFHelper::addAddressBoxC5Left4Pingen($this, $address, $debug);
     }
 
+    /**
+     * @param array{pp: string, sender: string}|null $pp
+     */
     public function addAddressBoxC5Right(string $address, ?array $pp = null, bool $debug = false): void
     {
         PDFHelper::addAddressBoxC5Right($this, $address, $pp, $debug);
@@ -127,14 +138,16 @@ class TCPDF extends \TCPDF
         PDFHelper::addAddressBoxC5Right4Pingen($this, $address, $debug);
     }
 
+    /**
+     * @param array{pp: string, sender: string}|null $pp
+     */
     public function addAddressBoxC65(string $address, ?array $pp = null, bool $debug = false): void
     {
         PDFHelper::addAddressBoxC65($this, $address, $pp, $debug);
     }
 
     /**
-     * @throws InvalidArgumentException if $mode string is not "S" or "K"
-     * @throws RuntimeException if country codes are invalid
+     * @throws InvalidArgumentException if $mode string is not "S" or "K", or if country codes are not ISO-3166 alpha-2
      */
     public function addQrCodeEsrFooter(
         EsrMode|string $mode,
@@ -161,9 +174,8 @@ class TCPDF extends \TCPDF
         ?string $subject,
         ?string $asset_schere = null,
         ?string $asset_kreuz = null,
-        bool $use_optional_page_break = true
-    ): void
-    {
+        bool $use_optional_page_break = true,
+    ): void {
         if ($use_optional_page_break) {
             // page break ?
             $MIN_HEIGHT_FOR_ESR_FOOTER = 110;
@@ -204,8 +216,7 @@ class TCPDF extends \TCPDF
     }
 
     /**
-     * @throws InvalidArgumentException if $mode string is not "S" or "K"
-     * @throws RuntimeException if country codes are invalid
+     * @throws InvalidArgumentException if $mode string is not "S" or "K", or if country codes are not ISO-3166 alpha-2
      */
     public function addQrCodeEsrPage(
         EsrMode|string $mode,
@@ -231,9 +242,8 @@ class TCPDF extends \TCPDF
         ?string $reference,
         ?string $subject,
         ?string $asset_schere = null,
-        ?string $asset_kreuz = null
-    ): void
-    {
+        ?string $asset_kreuz = null,
+    ): void {
         $this->AddPage();
         $this->SetAutoPageBreak(false);
 
@@ -262,6 +272,76 @@ class TCPDF extends \TCPDF
             $subject,
             $asset_schere,
             $asset_kreuz
+        );
+    }
+
+    /**
+     * Typed, DTO-based variant of {@see addQrCodeEsrFooter()}.
+     *
+     * Delegates to the positional method (the rendering core); value objects are
+     * just unpacked here. Country codes are validated by the Address constructor.
+     */
+    public function addEsrPaymentFooter(EsrPayment $payment, Address $recipient, Address $sender, bool $use_optional_page_break = true): void
+    {
+        $this->addQrCodeEsrFooter(
+            $payment->mode,
+            $recipient->name,
+            $recipient->addressLine1,
+            $recipient->addressLine2,
+            $recipient->street,
+            $recipient->buildingNumber,
+            $recipient->postalCode,
+            $recipient->city,
+            $recipient->countryCode,
+            $sender->name,
+            $sender->addressLine1,
+            $sender->addressLine2,
+            $sender->street,
+            $sender->buildingNumber,
+            $sender->postalCode,
+            $sender->city,
+            $sender->countryCode,
+            $payment->qrIban,
+            $payment->iban,
+            $payment->amount,
+            $payment->reference,
+            $payment->subject,
+            $payment->assetSchere,
+            $payment->assetKreuz,
+            $use_optional_page_break,
+        );
+    }
+
+    /**
+     * Typed, DTO-based variant of {@see addQrCodeEsrPage()}.
+     */
+    public function addEsrPaymentPage(EsrPayment $payment, Address $recipient, Address $sender): void
+    {
+        $this->addQrCodeEsrPage(
+            $payment->mode,
+            $recipient->name,
+            $recipient->addressLine1,
+            $recipient->addressLine2,
+            $recipient->street,
+            $recipient->buildingNumber,
+            $recipient->postalCode,
+            $recipient->city,
+            $recipient->countryCode,
+            $sender->name,
+            $sender->addressLine1,
+            $sender->addressLine2,
+            $sender->street,
+            $sender->buildingNumber,
+            $sender->postalCode,
+            $sender->city,
+            $sender->countryCode,
+            $payment->qrIban,
+            $payment->iban,
+            $payment->amount,
+            $payment->reference,
+            $payment->subject,
+            $payment->assetSchere,
+            $payment->assetKreuz,
         );
     }
 }

@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -m)",
+      "Bash(php -v)",
+      "Bash(composer --version)",
+      "Bash(composer cs *)",
+      "Bash(composer cs-check *)",
+      "Bash(composer phpstan *)",
+      "Bash(composer rector *)",
+      "Bash(composer rector-check *)",
+      "Bash(composer require *)",
+      "Bash(composer test *)",
+      "Bash(composer test-integration *)",
+      "Bash(vendor/bin/phpstan analyse *)",
+      "Bash(vendor/bin/phpunit *)"
+    ]
+  }
+}

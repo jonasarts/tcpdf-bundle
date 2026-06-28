@@ -1,2 +1,5 @@
 services:
-    jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF: ~
+    # Keep the TCPDF service public so it stays fetchable by id / injectable,
+    # exactly as before the SF8 migration (BC for existing products).
+    jonasarts\Bundle\TCPDFBundle\TCPDF\TCPDF:
+        public: true

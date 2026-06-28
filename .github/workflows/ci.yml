@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: "Quality gates (PHP 8.4)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: ctype, mbstring, gd
+          tools: composer:v2, composer-normalize, composer-require-checker, composer-unused
+          coverage: none
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Check composer.json normalization
+        run: composer normalize --dry-run --diff
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress
+
+      - name: PHPStan
+        run: composer phpstan
+
+      - name: PHP-CS-Fixer (dry-run)
+        run: composer cs-check
+
+      - name: Rector (dry-run)
+        run: composer rector-check
+
+      - name: Composer require-checker
+        run: composer-require-checker check
+
+      - name: Composer unused
+        run: composer-unused
+
+      - name: Security audit
+        run: composer audit
+
+  tests:
+    name: "Unit tests (PHP ${{ matrix.php }}, ${{ matrix.deps }} deps)"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '8.4', '8.5' ]
+        deps: [ 'highest', 'lowest' ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ctype, mbstring, gd
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies (${{ matrix.deps }})
+        run: |
+          if [ "${{ matrix.deps }}" = "lowest" ]; then
+            composer update --prefer-lowest --prefer-dist --no-progress
+          else
+            composer update --prefer-dist --no-progress
+          fi
+
+      - name: Ensure QR-bill assets exist
+        run: |
+          # The binary QR-bill assets live in src/Resources/assets/images/. If a
+          # checkout is missing them, create empty placeholders so the asset
+          # resolver does not throw (the tests never render them).
+          mkdir -p src/Resources/assets/images
+          [ -f src/Resources/assets/images/schere.png ] || printf '' > src/Resources/assets/images/schere.png
+          [ -f src/Resources/assets/images/ch-kreuz.png ] || printf '' > src/Resources/assets/images/ch-kreuz.png
+
+      - name: Unit tests
+        run: composer test
+
+  integration:
+    name: "Integration tests (PHP 8.4)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: ctype, mbstring, gd
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress
+
+      - name: Ensure QR-bill assets exist
+        run: |
+          mkdir -p src/Resources/assets/images
+          [ -f src/Resources/assets/images/schere.png ] || printf '' > src/Resources/assets/images/schere.png
+          [ -f src/Resources/assets/images/ch-kreuz.png ] || printf '' > src/Resources/assets/images/ch-kreuz.png
+
+      - name: Integration tests
+        run: composer test-integration

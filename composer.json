@@ -1,10 +1,11 @@
 {
     "name": "jonasarts/tcpdf-bundle",
     "description": "A TCPDF Bundle for Symfony",
-    "keywords": ["TCPDF"],
-    "homepage": "https://github.com/jonasarts/tcpdf-bundle",
-    "type": "symfony-bundle",
     "license": "MIT",
+    "type": "symfony-bundle",
+    "keywords": [
+        "TCPDF"
+    ],
     "authors": [
         {
             "name": "Jonas Hauser",
@@ -12,11 +13,27 @@
             "homepage": "https://www.jonasarts.com"
         }
     ],
-    "minimum-stability": "stable",
+    "homepage": "https://github.com/jonasarts/tcpdf-bundle",
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.4",
+        "ext-ctype": "*",
+        "ext-mbstring": "*",
+        "symfony/config": "^7.0 || ^8.0",
+        "symfony/dependency-injection": "^7.0 || ^8.0",
+        "symfony/http-kernel": "^7.0 || ^8.0",
+        "symfony/yaml": "^7.0 || ^8.0",
         "tecnickcom/tcpdf": "^6.10"
     },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^12.0 || ^13.0",
+        "rector/rector": "^2.0",
+        "symfony/framework-bundle": "^7.0 || ^8.0",
+        "symfony/test-pack": "^1.0"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "jonasarts\\Bundle\\TCPDFBundle\\": "src/"
@@ -26,5 +43,17 @@
         "psr-4": {
             "jonasarts\\Bundle\\TCPDFBundle\\Tests\\": "tests/"
         }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "cs": "php-cs-fixer fix",
+        "cs-check": "php-cs-fixer fix --dry-run --diff",
+        "phpstan": "phpstan analyse",
+        "rector": "rector process",
+        "rector-check": "rector process --dry-run",
+        "test": "phpunit --testsuite unit",
+        "test-integration": "phpunit --testsuite integration"
     }
 }

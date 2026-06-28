@@ -6,6 +6,6 @@ namespace jonasarts\Bundle\TCPDFBundle\TCPDF\Enum;
 
 enum EsrMode: string
 {
-    case MODE_S = "S";
-    case MODE_K = "K";
+    case MODE_S = 'S';
+    case MODE_K = 'K';
 }
