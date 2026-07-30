@@ -5,6 +5,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Notes
+
+- **This bundle is in maintenance mode.** Its engine, `tecnickcom/tcpdf`, is deprecated
+  upstream in favour of [`tecnickcom/tc-lib-pdf`](https://github.com/tecnickcom/tc-lib-pdf).
+  The successor is [`jonasarts/tcpdf2-bundle`](https://github.com/jonasarts/tcpdf2-bundle),
+  whose 8.1.0 runs on the modern engine and keeps the Swiss QR-bill and address-box helpers.
+  It is not a drop-in replacement — the legacy drawing API is gone. The PHP namespace is
+  unchanged, so the two packages conflict; switch the requirement rather than adding it.
+  This bundle stays on `tecnickcom/tcpdf` 6.x and receives fixes only.
+
 ## [8.0.1] - 2026-06-28
 
 ### Fixed

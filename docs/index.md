@@ -1,6 +1,10 @@
 jonasarts tcpdf-bundle
 ======================
 
+> Maintenance mode. The successor on the modern `tecnickcom/tc-lib-pdf` engine is
+> [jonasarts/tcpdf2-bundle](https://github.com/jonasarts/tcpdf2-bundle) — see the
+> [README](../README.md) for what changes.
+
 Installation
 ------------
 

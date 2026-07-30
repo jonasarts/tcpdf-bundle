@@ -4,6 +4,26 @@ tcpdf-bundle
 Simplified access to the TCPDF PHP class for the Symfony framework, with helpers
 for the Swiss QR-bill.
 
+> **Maintenance mode — the successor is
+> [jonasarts/tcpdf2-bundle](https://github.com/jonasarts/tcpdf2-bundle).**
+>
+> This bundle builds on [`tecnickcom/tcpdf`](https://packagist.org/packages/tecnickcom/tcpdf),
+> which upstream now describes as *"Deprecated legacy PDF engine for PHP. Use instead
+> tecnickcom/tc-lib-pdf."* Active development has moved to
+> [`tecnickcom/tc-lib-pdf`](https://github.com/tecnickcom/tc-lib-pdf).
+>
+> `tcpdf2-bundle` 8.1.0 runs on that modern engine and keeps the same Swiss QR-bill and
+> address-box helpers. It is **not** a drop-in replacement: the legacy drawing API
+> (`Cell()`, `MultiCell()`, `SetFont()`, `SetXY()`, `Output()`, …) is gone, because the
+> new engine has no cursor and positions everything absolutely. See its
+> [changelog](https://github.com/jonasarts/tcpdf2-bundle/blob/main/CHANGELOG.md) for the
+> full list of replacements.
+>
+> The PHP namespace is unchanged (`jonasarts\Bundle\TCPDFBundle\`), so the two packages
+> conflict and cannot be installed side by side — switch the requirement, do not add it.
+>
+> This bundle stays on `tecnickcom/tcpdf` 6.x and receives fixes only.
+
 [![Latest Stable Version](https://poser.pugx.org/jonasarts/tcpdf-bundle/v)](https://packagist.org/packages/jonasarts/tcpdf-bundle)
 [![Total Downloads](https://poser.pugx.org/jonasarts/tcpdf-bundle/downloads)](https://packagist.org/packages/jonasarts/tcpdf-bundle)
 [![License](https://poser.pugx.org/jonasarts/tcpdf-bundle/license)](https://packagist.org/packages/jonasarts/tcpdf-bundle)
