@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.2] - 2026-07-31
+
+Deprecation release. Documentation and package metadata only — no code changes.
+
 ### Notes
 
 - **This bundle is in maintenance mode.** Its engine, `tecnickcom/tcpdf`, is deprecated
