@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   It is not a drop-in replacement — the legacy drawing API is gone. The PHP namespace is
   unchanged, so the two packages conflict; switch the requirement rather than adding it.
   This bundle stays on `tecnickcom/tcpdf` 6.x and receives fixes only.
+- Marked `abandoned` in `composer.json`, replaced by `jonasarts/tcpdf2-bundle`. Packagist
+  and `composer install` now surface a deprecation notice pointing at the successor.
+  Installing and using this bundle keeps working — the marker is advisory.
 
 ## [8.0.1] - 2026-06-28
 

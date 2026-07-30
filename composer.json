@@ -3,6 +3,7 @@
     "description": "A TCPDF Bundle for Symfony",
     "license": "MIT",
     "type": "symfony-bundle",
+    "abandoned": "jonasarts/tcpdf2-bundle",
     "keywords": [
         "TCPDF"
     ],
